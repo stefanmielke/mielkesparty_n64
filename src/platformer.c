@@ -5,16 +5,54 @@
 #include "definitions.h"
 #include "screens/screen_config.h"
 #include "screens/main_screen.h"
+#include "screens/main_menu_screen.h"
 
-ScreenType screen_current;
+ScreenType screen_current = SCREEN_NONE;
+ScreenType next_screen = SCREEN_MAIN;
+
 fnCreate screen_create;
 fnTick screen_tick;
 fnDisplay screen_display;
 fnDestroy screen_destroy;
 
-void change_screen(ScreenType next_screen);
+struct controller_data keys_held;
+struct controller_data keys_released;
+int connected_controllers;
 
-int main( void ) {
+void change_screen(ScreenType next_screen);
+void setup();
+
+int main() {
+    setup();
+
+    /* Main loop test */
+    while(1) {
+        if (next_screen != SCREEN_NONE && screen_current != next_screen)
+            change_screen(next_screen);
+
+        controller_scan();
+        keys_held = get_keys_held();
+        keys_released = get_keys_up();
+        connected_controllers = get_controllers_present();
+
+        next_screen = screen_tick(&keys_held, &keys_released, connected_controllers);
+
+        /* Grab a render buffer */
+        static display_context_t disp = 0;
+        while( !(disp = display_lock()) );
+
+        screen_display(disp);
+
+        if (next_screen != SCREEN_NONE && screen_current != next_screen) {
+            graphics_set_color( 0xFFFFFFFF, 0x0 );
+            graphics_draw_text(disp, 0, (RES_Y) - 20, "Loading next screen...");
+        }
+
+        display_show(disp);
+    }
+}
+
+void setup() {
     /* enable interrupts (on the CPU) */
     init_interrupts();
 
@@ -24,25 +62,12 @@ int main( void ) {
     controller_init();
     timer_init();
 
-    // set_main_screen(screen_create, screen_tick, screen_display, screen_destroy);
-    change_screen(SCREEN_MAIN);
-
-    /* Main loop test */
-    while(1) {
-        /* To do initialize routines */
-        controller_scan();
-
-        screen_tick();
-
-        /* Grab a render buffer */
-        static display_context_t disp = 0;
-        while( !(disp = display_lock()) );
-
-        screen_display(disp);
-
-        /* Force backbuffer flip, ie: draw to screen */
-        display_show(disp);
-    }
+    WHITE = graphics_make_color(255, 255, 255, 255);
+    BLACK = graphics_make_color(0, 0, 0, 255);
+    RED = graphics_make_color(255, 0, 0, 255);
+    GREEN = graphics_make_color(0, 255, 0, 255);
+    BLUE = graphics_make_color(0, 0, 255, 255);
+    GRAY = graphics_make_color(60, 60, 60, 255);
 }
 
 void change_screen(ScreenType next_screen) {
@@ -50,7 +75,7 @@ void change_screen(ScreenType next_screen) {
         return;
 
     if (screen_current != SCREEN_NONE)
-    screen_destroy();
+        screen_destroy();
 
     switch (next_screen)
     {
@@ -59,6 +84,12 @@ void change_screen(ScreenType next_screen) {
         screen_tick = &main_screen_tick;
         screen_display = &main_screen_display;
         screen_destroy = &main_screen_destroy;
+        break;
+    case SCREEN_MAIN_MENU:
+        screen_create = &main_menu_screen_create;
+        screen_tick = &main_menu_screen_tick;
+        screen_display = &main_menu_screen_display;
+        screen_destroy = &main_menu_screen_destroy;
         break;
     default:
         assert("No correct screen sent to change_screen");

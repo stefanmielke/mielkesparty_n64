@@ -4,29 +4,28 @@
 
 #include "../definitions.h"
 
-// void set_main_screen(fnCreate* create, fnTick* tick, fnDisplay* display, fnDestroy* destroy) {
-//     create = &main_screen_create;
-//     tick = &main_screen_tick;
-//     display = &main_screen_display;
-//     destroy = &main_screen_destroy;
-// }
-
 void main_screen_create() {
 
 }
 
-void main_screen_tick() {
+ScreenType main_screen_tick(struct controller_data* keys_held, struct controller_data* keys_up, int connected_controllers) {
+    for (int i = 0; i < 4; ++i) {
+        if ((*keys_up).c[i].start)
+            return SCREEN_MAIN_MENU;
+    }
 
+    return SCREEN_MAIN;
 }
 
 void main_screen_display(display_context_t disp) {
-    /* Fill the screen */
-    graphics_fill_screen( disp, 0x0 );
+    graphics_fill_screen(disp, BLACK);
 
     /* Set the text output color */
-    graphics_set_color( 0x111111FF, 0x0 );
-
+    graphics_set_color(BLUE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2) - 20, "Mielke's Party");
+
+    graphics_set_color(RED, BLACK);
+    graphics_draw_text(disp, (RES_X / 2) - 45, (RES_Y / 2) + 20, "Press START");
 }
 
 void main_screen_destroy() {
