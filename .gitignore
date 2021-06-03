@@ -5,3 +5,5 @@
 *.elf
 *.o
 *.bin
+
+*.plan_bak*
