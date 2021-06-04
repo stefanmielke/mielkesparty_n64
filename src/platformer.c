@@ -1,10 +1,14 @@
 #include <libdragon.h>
 
 #include "definitions.h"
+#include "minigames.h"
 #include "utils/mem_pool.h"
 #include "screens/screen_config.h"
 #include "screens/main_screen.h"
 #include "screens/main_menu_screen.h"
+#include "screens/infinite_menu_screen.h"
+#include "screens/minigame_detail_screen.h"
+#include "screens/minigame_play_screen.h"
 
 ScreenType screen_current = SCREEN_NONE;
 ScreenType next_screen = SCREEN_MAIN;
@@ -19,6 +23,8 @@ struct controller_data keys_released;
 int connected_controllers;
 
 struct mem_zone memory_pool;
+
+MiniGame selected_minigame = MINIGAME_NONE;
 
 void change_screen(ScreenType next_screen);
 void setup();
@@ -96,11 +102,29 @@ void change_screen(ScreenType next_screen) {
         screen_display = &main_menu_screen_display;
         screen_destroy = &main_menu_screen_destroy;
         break;
+    case SCREEN_INFINITE_MENU:
+        screen_create = &infinite_menu_screen_create;
+        screen_tick = &infinite_menu_screen_tick;
+        screen_display = &infinite_menu_screen_display;
+        screen_destroy = &infinite_menu_screen_destroy;
+        break;
+    case SCREEN_MINIGAME_DETAIL:
+        screen_create = &minigame_detail_screen_create;
+        screen_tick = &minigame_detail_screen_tick;
+        screen_display = &minigame_detail_screen_display;
+        screen_destroy = &minigame_detail_screen_destroy;
+        break;
+    case SCREEN_MINIGAME_PLAY:
+        screen_create = &minigame_play_screen_create;
+        screen_tick = &minigame_play_screen_tick;
+        screen_display = &minigame_play_screen_display;
+        screen_destroy = &minigame_play_screen_destroy;
+        break;
     default:
         abort();
     }
 
     screen_current = next_screen;
 
-    screen_create(memory_pool);
+    screen_create();
 }

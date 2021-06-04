@@ -36,6 +36,7 @@ ScreenType main_menu_screen_tick(struct controller_data* keys_held, struct contr
             switch (screen->current_menu_item)
             {
             case Infinite:
+                return SCREEN_INFINITE_MENU;
             case Score:
             case Multiplayer:
                 break;

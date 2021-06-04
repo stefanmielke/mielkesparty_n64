@@ -14,7 +14,8 @@ AS = $(GCCN64PREFIX)as
 LD = $(GCCN64PREFIX)ld
 OBJCOPY = $(GCCN64PREFIX)objcopy
 
-OBJS = $(PROG_NAME).o screens/main_screen.o screens/main_menu_screen.o utils/mem_pool.o
+OBJS = $(PROG_NAME).o screens/main_screen.o screens/main_menu_screen.o screens/infinite_menu_screen.o screens/minigame_detail_screen.o \
+		screens/minigame_play_screen.o utils/mem_pool.o
 
 ifeq ($(N64_BYTE_SWAP),true)
 ROM_EXTENSION = .v64
