@@ -15,7 +15,7 @@ LD = $(GCCN64PREFIX)ld
 OBJCOPY = $(GCCN64PREFIX)objcopy
 
 OBJS = $(PROG_NAME).o screens/main_screen.o screens/main_menu_screen.o screens/infinite_menu_screen.o screens/minigame_detail_screen.o \
-		screens/minigame_play_screen.o utils/mem_pool.o utils/util_defs.o minigames/minigame_flyingbats.o
+		screens/minigame_play_screen.o screens/no_save_screen.o utils/mem_pool.o utils/util_defs.o minigames/minigame_flyingbats.o
 
 ifeq ($(N64_BYTE_SWAP),true)
 ROM_EXTENSION = .v64

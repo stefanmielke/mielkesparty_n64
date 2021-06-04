@@ -4,6 +4,7 @@
 
 typedef enum screen_type {
     SCREEN_NONE,
+    SCREEN_NOSAVE,
     SCREEN_MAIN,
     SCREEN_MAIN_MENU,
     SCREEN_INFINITE_MENU,

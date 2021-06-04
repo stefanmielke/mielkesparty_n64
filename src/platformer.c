@@ -5,6 +5,7 @@
 #include "utils/mem_pool.h"
 #include "utils/util_defs.h"
 #include "screens/screen_config.h"
+#include "screens/no_save_screen.h"
 #include "screens/main_screen.h"
 #include "screens/main_menu_screen.h"
 #include "screens/infinite_menu_screen.h"
@@ -85,6 +86,11 @@ void setup() {
     screen_rect.pos.y = SCREEN_TOP;
     screen_rect.size.width = SCREEN_RIGHT;
     screen_rect.size.height = SCREEN_BOTTOM;
+
+    // show warning if there is no way to save
+    if (eeprom_present() == EEPROM_NONE) {
+        next_screen = SCREEN_NOSAVE;
+    }
 }
 
 void change_screen(ScreenType next_screen) {
@@ -95,6 +101,11 @@ void change_screen(ScreenType next_screen) {
 
     switch (next_screen)
     {
+    case SCREEN_NOSAVE:
+        screen_create = &no_save_screen_create;
+        screen_tick = &no_save_screen_tick;
+        screen_display = &no_save_screen_display;
+        break;
     case SCREEN_MAIN:
         screen_create = &main_screen_create;
         screen_tick = &main_screen_tick;
