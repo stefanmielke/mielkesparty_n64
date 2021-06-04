@@ -70,7 +70,3 @@ void infinite_menu_screen_display(display_context_t disp) {
     graphics_set_color(screen->current_menu_item == Back ? RED : WHITE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 50, "Back");
 }
-
-void infinite_menu_screen_destroy() {
-
-}

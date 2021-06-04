@@ -29,7 +29,3 @@ void minigame_play_screen_display(display_context_t disp) {
     graphics_set_color(GRAY, BLACK);
     graphics_draw_text(disp, 0, RES_Y - 20, "Press START to exit");
 }
-
-void minigame_play_screen_destroy() {
-
-}

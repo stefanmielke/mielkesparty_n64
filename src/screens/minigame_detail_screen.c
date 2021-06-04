@@ -40,10 +40,6 @@ void minigame_detail_screen_display(display_context_t disp) {
     graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2) + 50, "Press B to go back");
 }
 
-void minigame_detail_screen_destroy() {
-
-}
-
 const char* get_minigame_name() {
     switch (selected_minigame) {
         case MINIGAME_FLYINGBATS:

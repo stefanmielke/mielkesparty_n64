@@ -28,7 +28,3 @@ void main_screen_display(display_context_t disp) {
     graphics_set_color(RED, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 45, (RES_Y / 2) + 20, "Press START");
 }
-
-void main_screen_destroy() {
-
-}

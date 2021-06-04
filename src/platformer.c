@@ -16,7 +16,6 @@ ScreenType next_screen = SCREEN_MAIN;
 fnCreate screen_create;
 fnTick screen_tick;
 fnDisplay screen_display;
-fnDestroy screen_destroy;
 
 struct controller_data keys_held;
 struct controller_data keys_released;
@@ -83,9 +82,6 @@ void change_screen(ScreenType next_screen) {
     if (next_screen == screen_current)
         return;
 
-    if (screen_current != SCREEN_NONE)
-        screen_destroy();
-
     mem_zone_free_all(&memory_pool);
 
     switch (next_screen)
@@ -94,31 +90,26 @@ void change_screen(ScreenType next_screen) {
         screen_create = &main_screen_create;
         screen_tick = &main_screen_tick;
         screen_display = &main_screen_display;
-        screen_destroy = &main_screen_destroy;
         break;
     case SCREEN_MAIN_MENU:
         screen_create = &main_menu_screen_create;
         screen_tick = &main_menu_screen_tick;
         screen_display = &main_menu_screen_display;
-        screen_destroy = &main_menu_screen_destroy;
         break;
     case SCREEN_INFINITE_MENU:
         screen_create = &infinite_menu_screen_create;
         screen_tick = &infinite_menu_screen_tick;
         screen_display = &infinite_menu_screen_display;
-        screen_destroy = &infinite_menu_screen_destroy;
         break;
     case SCREEN_MINIGAME_DETAIL:
         screen_create = &minigame_detail_screen_create;
         screen_tick = &minigame_detail_screen_tick;
         screen_display = &minigame_detail_screen_display;
-        screen_destroy = &minigame_detail_screen_destroy;
         break;
     case SCREEN_MINIGAME_PLAY:
         screen_create = &minigame_play_screen_create;
         screen_tick = &minigame_play_screen_tick;
         screen_display = &minigame_play_screen_display;
-        screen_destroy = &minigame_play_screen_destroy;
         break;
     default:
         abort();
