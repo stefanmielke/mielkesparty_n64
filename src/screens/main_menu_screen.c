@@ -13,13 +13,13 @@ typedef struct main_menu_screen {
 
 MainMenuScreen* screen;
 
-typedef enum menu_items {
+enum menu_items {
     Infinite,
     Score,
     Multiplayer,
     Back,
     MaxItems
-} MenuItems;
+};
 
 void main_menu_screen_create() {
     screen = mem_zone_alloc(&memory_pool, sizeof(MainMenuScreen));
