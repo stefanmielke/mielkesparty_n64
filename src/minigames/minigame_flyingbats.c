@@ -9,6 +9,7 @@
 #define MAX_SPEED_UP 20
 #define MAX_SPEED_DOWN 2
 #define JUMP_SPEED 10
+#define BUMP_SPEED 5
 #define BORDER_SIZE (SCREEN_BORDER + 5)
 #define LATERAL_SPEED 10.f / 255.f
 
@@ -22,15 +23,25 @@ typedef struct fb_player_data {
     uint32_t color;
     Position speed;
     bool jumped;
-    bool collided;
+    bool alive;
 } FB_PlayerData;
 
 typedef struct fb_enemy_data {
     Rect rect;
 } FB_EnemyData;
 
+typedef enum fb_state {
+    FB_START,
+    FB_PLAYING,
+    FB_DYING,
+    FB_DEAD
+} FB_State;
+
 typedef struct fb_minigame_data {
-    timer_link_t *speed_timer;
+    FB_State state;
+    timer_link_t *speedTimer;
+    timer_link_t *postStartTimer;
+    timer_link_t *postDeathTimer;
     FB_PlayerData playerOne;
     FB_EnemyData enemies[MAX_ENEMIES];
     float currentEnemySpeed;
@@ -42,13 +53,29 @@ void increase_speed(int ovfl) {
     fb_data->currentEnemySpeed += ENEMY_SPEED_INC;
 }
 
+void post_start(int ovfl) {
+    fb_data->state = FB_PLAYING;
+}
+
+void die() {
+    fb_data->playerOne.alive = false;
+    fb_data->state = FB_DYING;
+}
+
+void post_death(int ovfl) {
+    fb_data->state = FB_DEAD;
+}
+
 void minigame_flyingbats_create() {
     fb_data = mem_zone_alloc(&memory_pool, sizeof(FB_MiniGameData));
+    fb_data->state = FB_START;
+
     fb_data->playerOne.rect.pos.x = 20;
     fb_data->playerOne.rect.pos.y = 20;
     fb_data->playerOne.rect.size.width = 20;
     fb_data->playerOne.rect.size.height = 20;
     fb_data->playerOne.color = BLUE;
+    fb_data->playerOne.alive = true;
 
     for (size_t i = 0; i < MAX_ENEMIES; ++i) {
         fb_data->enemies[i].rect.size.width = ENEMY_SIZE;
@@ -58,14 +85,20 @@ void minigame_flyingbats_create() {
     }
     fb_data->currentEnemySpeed = ENEMY_SPEED_INIT;
 
-    fb_data->speed_timer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
+    fb_data->speedTimer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
+    fb_data->postStartTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_start);
 }
 
 void minigame_flyingbats_destroy() {
-    delete_timer(fb_data->speed_timer);
+    delete_timer(fb_data->speedTimer);
+    delete_timer(fb_data->postStartTimer);
+    delete_timer(fb_data->postDeathTimer);
 }
 
 bool minigame_flyingbats_tick() {
+    if (fb_data->state == FB_DEAD || fb_data->state == FB_DYING)
+        return true;
+
     /* player tick */
     fb_data->playerOne.speed.y += GRAVITY;
     if (fb_data->playerOne.speed.y < -MAX_SPEED_UP)
@@ -79,8 +112,10 @@ bool minigame_flyingbats_tick() {
         fb_data->playerOne.rect.pos.y = BORDER_SIZE;
         fb_data->playerOne.speed.y = 0;
     }
-    else if (fb_data->playerOne.rect.pos.y + fb_data->playerOne.rect.size.height + BORDER_SIZE > RES_Y)
+    else if (fb_data->playerOne.rect.pos.y + fb_data->playerOne.rect.size.height + BORDER_SIZE > RES_Y) {
         fb_data->playerOne.rect.pos.y = RES_Y - fb_data->playerOne.rect.size.height - BORDER_SIZE;
+        fb_data->playerOne.speed.y = -BUMP_SPEED;
+    }
 
     if (!fb_data->playerOne.jumped && keys_held.c[0].A) {
         fb_data->playerOne.jumped = true;
@@ -109,11 +144,10 @@ bool minigame_flyingbats_tick() {
     }
 
     /* collision check */
-    fb_data->playerOne.collided = false;
-    for (size_t i = 0; i < MAX_ENEMIES; ++i)
-    {
+    for (size_t i = 0; i < MAX_ENEMIES; ++i) {
         if (is_intersecting(fb_data->enemies[i].rect, fb_data->playerOne.rect)) {
-            fb_data->playerOne.collided = true;
+            die();
+            fb_data->postDeathTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_death);
             break;
         }
     }
@@ -122,14 +156,28 @@ bool minigame_flyingbats_tick() {
 }
 
 void minigame_flyingbats_display(display_context_t disp) {
-    for (size_t i = 0; i < MAX_ENEMIES; ++i)
-    {
+    if (fb_data->state == FB_DEAD) {
+        graphics_set_color(RED, BLACK);
+        graphics_draw_text(disp, (RES_X/2)-20, (RES_Y/2)-20, "-DEAD-");
+        return;
+    }
+
+    for (size_t i = 0; i < MAX_ENEMIES; ++i) {
         if (contains(fb_data->enemies[i].rect, screen_rect)) {
             DRAW_RECT(disp, fb_data->enemies[i].rect, RED);
         }
     }
 
     if (is_intersecting(fb_data->playerOne.rect, screen_rect)) {
-        DRAW_RECT(disp, fb_data->playerOne.rect, fb_data->playerOne.collided ? GREEN : fb_data->playerOne.color);
+        DRAW_RECT(disp, fb_data->playerOne.rect, fb_data->playerOne.alive ? fb_data->playerOne.color : GRAY);
+    }
+
+    if (fb_data->state == FB_START) {
+        graphics_set_color(GREEN, BLACK);
+        graphics_draw_text(disp, (RES_X/2)-30, (RES_Y/2)-20, "-START-");
+    }
+    else if (fb_data->state == FB_DYING) {
+        graphics_set_color(RED, BLACK);
+        graphics_draw_text(disp, (RES_X/2)-20, (RES_Y/2)-20, "-DEAD-");
     }
 }
