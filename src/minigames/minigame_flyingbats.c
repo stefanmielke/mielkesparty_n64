@@ -1,5 +1,7 @@
 #include "minigame_flyingbats.h"
 
+#include <stdio.h>
+
 #include "../definitions.h"
 #include "../utils/mem_pool.h"
 #include "../utils/util_defs.h"
@@ -39,6 +41,8 @@ typedef enum fb_state {
 
 typedef struct fb_minigame_data {
     FB_State state;
+    size_t seconds;
+    timer_link_t *timeTimer;
     timer_link_t *speedTimer;
     timer_link_t *postStartTimer;
     timer_link_t *postDeathTimer;
@@ -48,6 +52,7 @@ typedef struct fb_minigame_data {
 } FB_MiniGameData;
 
 FB_MiniGameData* fb_data;
+char* fb_time_string; // format mm:ss\0
 
 void increase_speed(int ovfl) {
     fb_data->currentEnemySpeed += ENEMY_SPEED_INC;
@@ -58,6 +63,7 @@ void post_start(int ovfl) {
 }
 
 void die() {
+    stop_timer(fb_data->timeTimer);
     fb_data->playerOne.alive = false;
     fb_data->state = FB_DYING;
 }
@@ -66,9 +72,20 @@ void post_death(int ovfl) {
     fb_data->state = FB_DEAD;
 }
 
+void time_inc(int ovfl) {
+    ++fb_data->seconds;
+    char minutes = fb_data->seconds / 60;
+    char seconds = fb_data->seconds % 60;
+    snprintf(fb_time_string, 8, "%02d:%02d", minutes, seconds);
+}
+
 void minigame_flyingbats_create() {
+    fb_time_string = mem_zone_alloc(&memory_pool, sizeof(char)*8); // format mm:ss\0
+    fb_time_string = "00:00\0";
+
     fb_data = mem_zone_alloc(&memory_pool, sizeof(FB_MiniGameData));
     fb_data->state = FB_START;
+    fb_data->seconds = 0;
 
     fb_data->playerOne.rect.pos.x = 20;
     fb_data->playerOne.rect.pos.y = 20;
@@ -85,11 +102,13 @@ void minigame_flyingbats_create() {
     }
     fb_data->currentEnemySpeed = ENEMY_SPEED_INIT;
 
+    fb_data->timeTimer = new_timer(TIMER_TICKS(SECOND), TF_CONTINUOUS, time_inc);
     fb_data->speedTimer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
     fb_data->postStartTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_start);
 }
 
 void minigame_flyingbats_destroy() {
+    delete_timer(fb_data->timeTimer);
     delete_timer(fb_data->speedTimer);
     delete_timer(fb_data->postStartTimer);
     delete_timer(fb_data->postDeathTimer);
@@ -159,6 +178,10 @@ void minigame_flyingbats_display(display_context_t disp) {
     if (fb_data->state == FB_DEAD) {
         graphics_set_color(RED, BLACK);
         graphics_draw_text(disp, (RES_X/2)-20, (RES_Y/2)-20, "-DEAD-");
+        graphics_set_color(WHITE, BLACK);
+        graphics_draw_text(disp, (RES_X/2)-60, (RES_Y/2) + 10, "Total Time:");
+        graphics_set_color(GREEN, BLACK);
+        graphics_draw_text(disp, (RES_X/2)+30, (RES_Y/2) + 10, fb_time_string);
         return;
     }
 
@@ -180,4 +203,7 @@ void minigame_flyingbats_display(display_context_t disp) {
         graphics_set_color(RED, BLACK);
         graphics_draw_text(disp, (RES_X/2)-20, (RES_Y/2)-20, "-DEAD-");
     }
+
+    graphics_set_color(WHITE, BLACK);
+    graphics_draw_text(disp, SCREEN_LEFT, SCREEN_TOP, fb_time_string);
 }
