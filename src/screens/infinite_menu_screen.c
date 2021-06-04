@@ -3,6 +3,7 @@
 #include <libdragon.h>
 
 #include "../definitions.h"
+#include "screen_defs.h"
 #include "../minigames.h"
 #include "../utils/mem_pool.h"
 
@@ -26,13 +27,13 @@ void infinite_menu_screen_create() {
     screen->current_menu_item = 0;
 }
 
-ScreenType infinite_menu_screen_tick(struct controller_data* keys_held, struct controller_data* keys_up, int connected_controllers) {
+ScreenType infinite_menu_screen_tick() {
     // checking pressing buttons before moving the cursor
     for (int i = 0; i < 4; ++i) {
-        if ((*keys_up).c[i].B)
+        if (keys_released.c[i].B)
             return SCREEN_MAIN_MENU;
 
-        if ((*keys_up).c[i].A || (*keys_up).c[i].start)
+        if (keys_released.c[i].A || keys_released.c[i].start)
             switch (screen->current_menu_item)
             {
             case FlyingBats:
@@ -43,10 +44,10 @@ ScreenType infinite_menu_screen_tick(struct controller_data* keys_held, struct c
             }
     }
     for (int i = 0; i < 4; ++i) {
-        if ((*keys_up).c[i].up)
+        if (keys_released.c[i].up)
             --screen->current_menu_item;
 
-        if ((*keys_up).c[i].down)
+        if (keys_released.c[i].down)
             ++screen->current_menu_item;
     }
 

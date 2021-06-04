@@ -3,15 +3,16 @@
 #include <libdragon.h>
 
 #include "../definitions.h"
+#include "screen_defs.h"
 #include "../utils/mem_pool.h"
 
 void main_screen_create() {
     
 }
 
-ScreenType main_screen_tick(struct controller_data* keys_held, struct controller_data* keys_up, int connected_controllers) {
+ScreenType main_screen_tick() {
     for (int i = 0; i < 4; ++i) {
-        if ((*keys_up).c[i].start)
+        if (keys_released.c[i].start)
             return SCREEN_MAIN_MENU;
     }
 

@@ -5,4 +5,15 @@
 #define SCREEN_RESOLUTION RESOLUTION_320x240
 #define NUM_BUFFERS 2
 
+#define SCREEN_BORDER 10
+#define SCREEN_TOP SCREEN_BORDER
+#define SCREEN_LEFT SCREEN_BORDER
+#define SCREEN_RIGHT (RES_X - SCREEN_BORDER)
+#define SCREEN_BOTTOM (RES_Y - SCREEN_BORDER)
+
 uint32_t WHITE, BLACK, RED, GREEN, BLUE, GRAY;
+
+#define RANDN(max) (rand() % (max))
+#define RANDR(min, max) ((rand() % ( (max) - (min) + 1 )) + (min))
+
+#define SECOND 1000000

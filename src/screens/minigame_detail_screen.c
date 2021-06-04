@@ -3,6 +3,7 @@
 #include <libdragon.h>
 
 #include "../definitions.h"
+#include "screen_defs.h"
 #include "../minigames.h"
 #include "../utils/mem_pool.h"
 
@@ -15,12 +16,12 @@ void minigame_detail_screen_create() {
 
 }
 
-ScreenType minigame_detail_screen_tick(struct controller_data* keys_held, struct controller_data* keys_up, int connected_controllers) {
+ScreenType minigame_detail_screen_tick() {
     for (int i = 0; i < 4; ++i) {
-        if ((*keys_up).c[i].B)
+        if (keys_released.c[i].B)
             return SCREEN_INFINITE_MENU;
 
-        if ((*keys_up).c[i].start)
+        if (keys_released.c[i].start)
             return SCREEN_MINIGAME_PLAY;
     }
 

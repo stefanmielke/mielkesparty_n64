@@ -3,6 +3,7 @@
 #include "definitions.h"
 #include "minigames.h"
 #include "utils/mem_pool.h"
+#include "utils/util_defs.h"
 #include "screens/screen_config.h"
 #include "screens/main_screen.h"
 #include "screens/main_menu_screen.h"
@@ -12,6 +13,7 @@
 
 ScreenType screen_current = SCREEN_NONE;
 ScreenType next_screen = SCREEN_MAIN;
+Rect screen_rect;
 
 fnCreate screen_create;
 fnTick screen_tick;
@@ -53,7 +55,7 @@ int main() {
 
         if (next_screen != SCREEN_NONE && screen_current != next_screen) {
             graphics_set_color( 0xFFFFFFFF, 0x0 );
-            graphics_draw_text(disp, 0, (RES_Y) - 20, "Loading next screen...");
+            graphics_draw_text(disp, SCREEN_BORDER, RES_Y - SCREEN_BORDER - 20, "Loading next screen...");
         }
 
         display_show(disp);
@@ -65,7 +67,7 @@ void setup() {
     init_interrupts();
 
     /* Initialize peripherals */
-    display_init( SCREEN_RESOLUTION, DEPTH_16_BPP, NUM_BUFFERS, GAMMA_NONE, ANTIALIAS_OFF );
+    display_init(SCREEN_RESOLUTION, DEPTH_16_BPP, NUM_BUFFERS, GAMMA_NONE, ANTIALIAS_RESAMPLE);
     rdp_init();
     controller_init();
     timer_init();
@@ -74,10 +76,15 @@ void setup() {
 
     WHITE = graphics_make_color(255, 255, 255, 255);
     BLACK = graphics_make_color(0, 0, 0, 255);
-    RED = graphics_make_color(255, 0, 0, 255);
-    GREEN = graphics_make_color(0, 255, 0, 255);
-    BLUE = graphics_make_color(0, 0, 255, 255);
-    GRAY = graphics_make_color(60, 60, 60, 255);
+    RED = graphics_make_color(255, 100, 100, 255);
+    GREEN = graphics_make_color(100, 255, 100, 255);
+    BLUE = graphics_make_color(100, 100, 255, 255);
+    GRAY = graphics_make_color(100, 100, 100, 255);
+
+    screen_rect.pos.x = SCREEN_LEFT;
+    screen_rect.pos.y = SCREEN_TOP;
+    screen_rect.size.width = SCREEN_RIGHT;
+    screen_rect.size.height = SCREEN_BOTTOM;
 }
 
 void change_screen(ScreenType next_screen) {
