@@ -5,7 +5,7 @@
 #include "../definitions.h"
 #include "../utils/mem_pool.h"
 
-extern struct mem_zone memory_pool;
+extern MemZone memory_pool;
 
 typedef struct main_menu_screen {
     char current_menu_item;

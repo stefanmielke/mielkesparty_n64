@@ -1,16 +1,22 @@
 #include "mem_pool.h"
 
-void mem_zone_init(struct mem_zone *z, size_t size) {
+#include <libdragon.h>
+
+void mem_zone_init(MemZone *z, size_t size) {
+    disable_interrupts();
+
     void *ptr = malloc(size);
     if (ptr == NULL) {
         abort(); // Put your error handling here.
     }
-    z->pos = (uintptr_t)ptr;
-    z->start = (uintptr_t)ptr;
-    z->end = (uintptr_t)ptr + size;
+    z->pos = (char*)ptr;
+    z->start = z->pos;
+    z->end = z->start + size;
+
+    enable_interrupts();
 }
 
-void *mem_zone_alloc(struct mem_zone *z, size_t size) {
+void *mem_zone_alloc(MemZone *z, size_t size) {
     if (size == 0) {
         return NULL;
     }
@@ -19,13 +25,14 @@ void *mem_zone_alloc(struct mem_zone *z, size_t size) {
     // How much free space remaining in zone?
     size_t rem = z->end - z->pos;
     if (rem < size) {
-        abort(); // Out of memory. Put your error handling here.
+        return NULL; // Out of memory. Put your error handling here.
     }
-    uintptr_t ptr = z->pos;
-    z->pos = ptr + size;
-    return (void *)ptr;
+
+    void* ptr = (void*)z->pos;
+    z->pos += size;
+    return ptr;
 }
 
-void mem_zone_free_all(struct mem_zone *z) {
+void mem_zone_free_all(MemZone *z) {
     z->pos = z->start;
 }

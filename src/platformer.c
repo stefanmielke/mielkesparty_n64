@@ -21,7 +21,7 @@ struct controller_data keys_held;
 struct controller_data keys_released;
 int connected_controllers;
 
-struct mem_zone memory_pool;
+MemZone memory_pool;
 
 MiniGame selected_minigame = MINIGAME_NONE;
 
@@ -46,7 +46,7 @@ int main() {
         /* Grab a render buffer */
         static display_context_t disp = 0;
         while( !(disp = display_lock()) );
-        
+
         graphics_fill_screen(disp, BLACK);
 
         screen_display(disp);

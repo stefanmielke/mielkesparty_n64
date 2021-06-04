@@ -5,7 +5,6 @@ typedef enum minigame {
     MINIGAME_FLYINGBATS
 } MiniGame;
 
-
 typedef void (*fnGameCreate)();
 /** Returns if it should continue */
 typedef bool (*fnGameTick)();

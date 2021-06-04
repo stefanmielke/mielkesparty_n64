@@ -6,7 +6,7 @@
 #include "../minigames.h"
 #include "../utils/mem_pool.h"
 
-extern struct mem_zone memory_pool;
+extern MemZone memory_pool;
 extern MiniGame selected_minigame;
 
 typedef struct infinite_menu_screen {

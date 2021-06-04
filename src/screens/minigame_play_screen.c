@@ -8,31 +8,34 @@
 
 #include "../minigames/minigame_flyingbats.h"
 
-extern struct mem_zone memory_pool;
+#include <stdio.h>
+
+extern MemZone memory_pool;
 extern MiniGame selected_minigame;
 
 typedef struct minigame_screen {
     fnGameCreate create;
     fnGameTick tick;
     fnGameDisplay display;
+    char* print;
 } MiniGameScreen;
 
-MiniGameScreen* data;
+MiniGameScreen* play_screen_data;
 
 void minigame_play_screen_create() {
-    data = mem_zone_alloc(&memory_pool, sizeof(MiniGameScreen));
+    play_screen_data = mem_zone_alloc(&memory_pool, sizeof(MiniGameScreen));
 
     switch (selected_minigame) {
         case MINIGAME_FLYINGBATS:
-            data->create = &minigame_flyingbats_create;
-            data->tick = &minigame_flyingbats_tick;
-            data->display = &minigame_flyingbats_display;
+            play_screen_data->create = &minigame_flyingbats_create;
+            play_screen_data->tick = &minigame_flyingbats_tick;
+            play_screen_data->display = &minigame_flyingbats_display;
             break;
         default:
             abort();
     }
 
-    data->create();
+    play_screen_data->create();
 }
 
 ScreenType minigame_play_screen_tick(struct controller_data* keys_held, struct controller_data* keys_up, int connected_controllers) {
@@ -41,13 +44,14 @@ ScreenType minigame_play_screen_tick(struct controller_data* keys_held, struct c
             return SCREEN_MINIGAME_DETAIL;
     }
 
-    data->tick();
+    if (!play_screen_data->tick())
+        return SCREEN_MINIGAME_DETAIL;
 
     return SCREEN_MINIGAME_PLAY;
 }
 
 void minigame_play_screen_display(display_context_t disp) {
-    data->display(disp);
+    play_screen_data->display(disp);
 
     /* Set the text output color */
     graphics_set_color(GRAY, BLACK);
