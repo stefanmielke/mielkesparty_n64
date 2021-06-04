@@ -15,7 +15,7 @@
 #define MAX_ENEMIES 20
 #define ENEMY_SIZE 10
 #define ENEMY_SPEED_INIT 1.5f
-#define ENEMY_SPEED_INC .5f
+#define ENEMY_SPEED_INC .1f
 
 typedef struct fb_player_data {
     Rect rect;
@@ -30,6 +30,7 @@ typedef struct fb_enemy_data {
 } FB_EnemyData;
 
 typedef struct fb_minigame_data {
+    timer_link_t *speed_timer;
     FB_PlayerData playerOne;
     FB_EnemyData enemies[MAX_ENEMIES];
     float currentEnemySpeed;
@@ -57,7 +58,11 @@ void minigame_flyingbats_create() {
     }
     fb_data->currentEnemySpeed = ENEMY_SPEED_INIT;
 
-    new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
+    fb_data->speed_timer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
+}
+
+void minigame_flyingbats_destroy() {
+    delete_timer(fb_data->speed_timer);
 }
 
 bool minigame_flyingbats_tick() {

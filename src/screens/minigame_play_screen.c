@@ -18,6 +18,7 @@ typedef struct minigame_screen {
     fnGameCreate create;
     fnGameTick tick;
     fnGameDisplay display;
+    fnGameDestroy destroy;
     char* print;
 } MiniGameScreen;
 
@@ -31,6 +32,7 @@ void minigame_play_screen_create() {
             play_screen_data->create = &minigame_flyingbats_create;
             play_screen_data->tick = &minigame_flyingbats_tick;
             play_screen_data->display = &minigame_flyingbats_display;
+            play_screen_data->destroy = &minigame_flyingbats_destroy;
             break;
         default:
             abort();
@@ -41,12 +43,16 @@ void minigame_play_screen_create() {
 
 ScreenType minigame_play_screen_tick() {
     for (int i = 0; i < 4; ++i) {
-        if (keys_released.c[i].start)
+        if (keys_released.c[i].start) {
+            play_screen_data->destroy();
             return SCREEN_MINIGAME_DETAIL;
+        }
     }
 
-    if (!play_screen_data->tick())
+    if (!play_screen_data->tick()) {
+        play_screen_data->destroy();
         return SCREEN_MINIGAME_DETAIL;
+    }
 
     return SCREEN_MINIGAME_PLAY;
 }
