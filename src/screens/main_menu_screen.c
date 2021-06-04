@@ -5,14 +5,23 @@
 #include "../definitions.h"
 #include "../utils/mem_pool.h"
 
+extern struct mem_zone memory_pool;
+
 typedef struct main_menu_screen {
     char current_menu_item;
 } MainMenuScreen;
 
 MainMenuScreen* screen;
-#define max_menu_items 4
 
-void main_menu_screen_create(struct mem_zone memory_pool) {
+typedef enum menu_items {
+    Infinite,
+    Score,
+    Multiplayer,
+    Back,
+    MaxItems
+} MenuItems;
+
+void main_menu_screen_create() {
     screen = mem_zone_alloc(&memory_pool, sizeof(MainMenuScreen));
     screen->current_menu_item = 0;
 }
@@ -26,11 +35,11 @@ ScreenType main_menu_screen_tick(struct controller_data* keys_held, struct contr
         if ((*keys_up).c[i].A || (*keys_up).c[i].start)
             switch (screen->current_menu_item)
             {
-            case 0:
-            case 1:
-            case 2:
+            case Infinite:
+            case Score:
+            case Multiplayer:
                 break;
-            case max_menu_items - 1:
+            case Back:
                 return SCREEN_MAIN;
             }
     }
@@ -43,8 +52,8 @@ ScreenType main_menu_screen_tick(struct controller_data* keys_held, struct contr
     }
 
     if (screen->current_menu_item < 0)
-        screen->current_menu_item = max_menu_items - 1;
-    if (screen->current_menu_item >= max_menu_items)
+        screen->current_menu_item = MaxItems - 1;
+    if (screen->current_menu_item >= MaxItems)
         screen->current_menu_item = 0;
 
     return SCREEN_MAIN_MENU;

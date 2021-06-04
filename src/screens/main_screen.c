@@ -5,7 +5,7 @@
 #include "../definitions.h"
 #include "../utils/mem_pool.h"
 
-void main_screen_create(struct mem_zone memory_pool) {
+void main_screen_create() {
     
 }
 
