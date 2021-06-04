@@ -19,8 +19,6 @@ ScreenType main_screen_tick(struct controller_data* keys_held, struct controller
 }
 
 void main_screen_display(display_context_t disp) {
-    graphics_fill_screen(disp, BLACK);
-
     /* Set the text output color */
     graphics_set_color(BLUE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2) - 20, "Mielke's Party");

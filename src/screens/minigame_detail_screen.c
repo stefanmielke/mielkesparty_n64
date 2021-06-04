@@ -28,8 +28,6 @@ ScreenType minigame_detail_screen_tick(struct controller_data* keys_held, struct
 }
 
 void minigame_detail_screen_display(display_context_t disp) {
-    graphics_fill_screen(disp, BLACK);
-
     /* Set the text output color */
     graphics_set_color(BLUE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) - 20, get_minigame_name());

@@ -46,6 +46,8 @@ int main() {
         /* Grab a render buffer */
         static display_context_t disp = 0;
         while( !(disp = display_lock()) );
+        
+        graphics_fill_screen(disp, BLACK);
 
         screen_display(disp);
 
