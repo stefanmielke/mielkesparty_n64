@@ -3,9 +3,10 @@
 #include <libdragon.h>
 
 #include "../definitions.h"
+#include "../utils/mem_pool.h"
 
-void main_screen_create() {
-
+void main_screen_create(struct mem_zone memory_pool) {
+    
 }
 
 ScreenType main_screen_tick(struct controller_data* keys_held, struct controller_data* keys_up, int connected_controllers) {

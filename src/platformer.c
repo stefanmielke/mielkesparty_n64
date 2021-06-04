@@ -1,8 +1,7 @@
-#include <assert.h>
-
 #include <libdragon.h>
 
 #include "definitions.h"
+#include "utils/mem_pool.h"
 #include "screens/screen_config.h"
 #include "screens/main_screen.h"
 #include "screens/main_menu_screen.h"
@@ -18,6 +17,8 @@ fnDestroy screen_destroy;
 struct controller_data keys_held;
 struct controller_data keys_released;
 int connected_controllers;
+
+struct mem_zone memory_pool;
 
 void change_screen(ScreenType next_screen);
 void setup();
@@ -62,6 +63,8 @@ void setup() {
     controller_init();
     timer_init();
 
+    mem_zone_init(&memory_pool, 1 * 1024);
+
     WHITE = graphics_make_color(255, 255, 255, 255);
     BLACK = graphics_make_color(0, 0, 0, 255);
     RED = graphics_make_color(255, 0, 0, 255);
@@ -76,6 +79,8 @@ void change_screen(ScreenType next_screen) {
 
     if (screen_current != SCREEN_NONE)
         screen_destroy();
+
+    mem_zone_free_all(&memory_pool);
 
     switch (next_screen)
     {
@@ -92,10 +97,10 @@ void change_screen(ScreenType next_screen) {
         screen_destroy = &main_menu_screen_destroy;
         break;
     default:
-        assert("No correct screen sent to change_screen");
+        abort();
     }
 
     screen_current = next_screen;
 
-    screen_create();
+    screen_create(memory_pool);
 }
