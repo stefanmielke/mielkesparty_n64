@@ -64,14 +64,14 @@ ScreenType main_menu_screen_tick() {
 void main_menu_screen_display(display_context_t disp) {
     /* Set the text output color */
     graphics_set_color(BLUE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) - 20, "Main Menu");
+    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) - 40, "Main Menu");
 
     graphics_set_color(screen->current_menu_item == 0 ? RED : WHITE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 20, "Infinite");
-    graphics_set_color(screen->current_menu_item == 1 ? RED : WHITE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 30, "Score");
-    graphics_set_color(screen->current_menu_item == 2 ? RED : WHITE, BLACK);
+    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2), "Infinite");
+    graphics_set_color(screen->current_menu_item == 1 ? RED : GRAY, BLACK);
+    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 20, "Score");
+    graphics_set_color(screen->current_menu_item == 2 ? RED : GRAY, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 40, "Multiplayer");
     graphics_set_color(screen->current_menu_item == 3 ? RED : WHITE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 50, "Back");
+    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 60, "Back");
 }

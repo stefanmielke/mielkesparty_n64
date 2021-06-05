@@ -62,10 +62,10 @@ ScreenType infinite_menu_screen_tick() {
 void infinite_menu_screen_display(display_context_t disp) {
     /* Set the text output color */
     graphics_set_color(BLUE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) - 20, "Infinite Mini-Games");
+    graphics_draw_text(disp, (RES_X / 2) - 70, (RES_Y / 2) - 40, "Infinite Mini-Games");
 
     graphics_set_color(screen->current_menu_item == FlyingBats ? RED : WHITE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 20, "Flying Bats");
+    graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2), "Flying Bats");
     graphics_set_color(screen->current_menu_item == Back ? RED : WHITE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 50, "Back");
+    graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2) + 20, "Back");
 }
