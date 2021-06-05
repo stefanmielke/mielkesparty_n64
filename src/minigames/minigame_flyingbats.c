@@ -15,7 +15,8 @@
 #define JUMP_SPEED 10
 #define BUMP_SPEED 5
 #define BORDER_SIZE (SCREEN_BORDER + 5)
-#define LATERAL_SPEED 10.f / 255.f
+#define MAX_LATERAL_SPEED 6.f
+#define LATERAL_SPEED (MAX_LATERAL_SPEED / 100.f)
 
 #define MAX_ENEMIES 20
 #define ENEMY_SIZE 14
@@ -197,6 +198,10 @@ bool minigame_flyingbats_tick() {
 
     if (keys_held.c[0].x != 0)
         fb_data->playerOne.rect.pos.x += keys_held.c[0].x * LATERAL_SPEED;
+    else if (keys_held.c[0].right)
+        fb_data->playerOne.rect.pos.x += MAX_LATERAL_SPEED;
+    else if (keys_held.c[0].left)
+        fb_data->playerOne.rect.pos.x -= MAX_LATERAL_SPEED;
 
     if (fb_data->playerOne.rect.pos.x - BORDER_SIZE < 0)
         fb_data->playerOne.rect.pos.x = BORDER_SIZE;
@@ -242,7 +247,7 @@ void minigame_flyingbats_display(display_context_t disp) {
     }
 
     /* Assure RDP is ready for new commands */
-    rdp_sync( SYNC_PIPE );
+    rdp_sync(SYNC_PIPE);
     rdp_set_default_clipping();
     rdp_enable_texture_copy();
     rdp_attach_display(disp);
