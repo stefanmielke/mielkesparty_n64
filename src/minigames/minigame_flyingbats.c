@@ -7,6 +7,7 @@
 #include "../utils/mem_pool.h"
 #include "../utils/util_defs.h"
 #include "minigame_defs.h"
+#include "../gfx_h/gfx_flying_bats.h"
 
 #define GRAVITY 1
 #define MAX_SPEED_UP 20
@@ -142,10 +143,7 @@ void minigame_flyingbats_create() {
     fb_data->speedTimer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
     fb_data->postStartTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_start);
 
-    int fp = dfs_open("/flying_bat.sprite");
-    fb_data->sprites = malloc(dfs_size(fp));
-    dfs_read(fb_data->sprites, 1, dfs_size(fp), fp);
-    dfs_close(fp);
+    alloc_and_load_spritesheet_flying_bat(fb_data->sprites);
 }
 
 void minigame_flyingbats_destroy() {
@@ -247,21 +245,25 @@ void minigame_flyingbats_display(display_context_t disp) {
     rdp_sync( SYNC_PIPE );
     rdp_set_default_clipping();
     rdp_enable_texture_copy();
-    rdp_attach_display( disp );
+    rdp_attach_display(disp);
+
+    rdp_sync(SYNC_PIPE);
+    rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, SPRITE_fb_sky);
+    rdp_draw_textured_rectangle(0, 0, 0, RES_X, RES_Y, MIRROR_DISABLED);
 
     for (size_t i = 0; i < MAX_ENEMIES; ++i) {
         if (contains(fb_data->enemies[i].rect, screen_rect)) {
             rdp_sync(SYNC_PIPE);
-            rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, (fb_data->animCounter % 2) + 4);
-            rdp_draw_sprite(0, fb_data->enemies[i].rect.pos.x - 9, fb_data->enemies[i].rect.pos.y - 9, MIRROR_DISABLED );
+            rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, (fb_data->animCounter % 2) + SPRITE_fb_obstacle_1);
+            rdp_draw_sprite(0, fb_data->enemies[i].rect.pos.x - 9, fb_data->enemies[i].rect.pos.y - 9, MIRROR_DISABLED);
         }
     }
 
     if (is_intersecting(fb_data->playerOne.rect, screen_rect)) {
         size_t animCounter = fb_data->playerOne.speed.y >= 0 ? fb_data->animCounter : fb_data->animCounter*2;
         rdp_sync(SYNC_PIPE);
-        rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, animCounter % 4);
-        rdp_draw_sprite(0, fb_data->playerOne.rect.pos.x - 11, fb_data->playerOne.rect.pos.y - 13, MIRROR_DISABLED );
+        rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, animCounter % (SPRITE_fb_bat_4 - SPRITE_fb_bat_1 + 1));
+        rdp_draw_sprite(0, fb_data->playerOne.rect.pos.x - 11, fb_data->playerOne.rect.pos.y - 13, MIRROR_DISABLED);
     }
 
     rdp_detach_display();

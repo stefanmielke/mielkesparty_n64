@@ -26,7 +26,6 @@ ROM_EXTENSION = .z64
 N64_FLAGS = -l 2M -h $(HEADERPATH)/$(HEADERNAME) -o $(PROG_NAME)$(ROM_EXTENSION)
 endif
 
-#your program name
 PROG_NAME = mielke_party
 PROG_TAG = "MielkeParty"
 ROM_DEPLOY_PATH = "./../"
@@ -40,16 +39,13 @@ $(PROG_NAME)$(ROM_EXTENSION): $(PROG_NAME).elf packed_files.dfs
 	$(N64TOOL) $(N64_FLAGS) -t $(PROG_TAG) $(PROG_NAME).bin -s 1M packed_files.dfs
 	$(CHKSUM64PATH) $(PROG_NAME)$(ROM_EXTENSION)
 
-#pack our icons.sprite into dfs (Dragon File System)
-#$(MKSPRITEPATH), 16 bits 1 column, 17 rows of sprites (17 sprites total) used
-#to convert spritesheet.png into compat. Dragon format
+#$(MKSPRITEPATH) [bits] [columns] [rows] [source.png] [destination.sprite]
 packed_files.dfs:
 	mkdir -p res
-	$(MKSPRITEPATH) 16 4 2 ./raw/flying_bat.png ./res/flying_bat.sprite 
+	$(MKSPRITEPATH) 16 7 1 ./raw/flying_bat.png ./res/flying_bat.sprite
 	$(MKDFSPATH) packed_files.dfs ./res/
 
 all: $(PROG_NAME)$(ROM_EXTENSION)
-	@echo end
 	mv $(PROG_NAME).z64 $(ROM_DEPLOY_PATH)
 
 clean:
