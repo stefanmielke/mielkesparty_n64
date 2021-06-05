@@ -243,18 +243,28 @@ void minigame_flyingbats_display(display_context_t disp) {
         return;
     }
 
+    /* Assure RDP is ready for new commands */
+    rdp_sync( SYNC_PIPE );
+    rdp_set_default_clipping();
+    rdp_enable_texture_copy();
+    rdp_attach_display( disp );
+
     for (size_t i = 0; i < MAX_ENEMIES; ++i) {
         if (contains(fb_data->enemies[i].rect, screen_rect)) {
-            // DRAW_RECT(disp, fb_data->enemies[i].rect, RED);
-            graphics_draw_sprite_trans_stride(disp, fb_data->enemies[i].rect.pos.x - 9, fb_data->enemies[i].rect.pos.y - 9, fb_data->sprites, (fb_data->animCounter % 2) + 4);
+            rdp_sync(SYNC_PIPE);
+            rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, (fb_data->animCounter % 2) + 4);
+            rdp_draw_sprite(0, fb_data->enemies[i].rect.pos.x - 9, fb_data->enemies[i].rect.pos.y - 9, MIRROR_DISABLED );
         }
     }
 
     if (is_intersecting(fb_data->playerOne.rect, screen_rect)) {
-        // DRAW_RECT(disp, fb_data->playerOne.rect, RED);
         size_t animCounter = fb_data->playerOne.speed.y >= 0 ? fb_data->animCounter : fb_data->animCounter*2;
-        graphics_draw_sprite_trans_stride(disp, fb_data->playerOne.rect.pos.x - 11, fb_data->playerOne.rect.pos.y - 13, fb_data->sprites, animCounter % 4);
+        rdp_sync(SYNC_PIPE);
+        rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, animCounter % 4);
+        rdp_draw_sprite(0, fb_data->playerOne.rect.pos.x - 11, fb_data->playerOne.rect.pos.y - 13, MIRROR_DISABLED );
     }
+
+    rdp_detach_display();
 
     if (fb_data->state == FB_START) {
         graphics_set_color(GREEN, BLACK);
