@@ -1,6 +1,7 @@
 #include "minigame_flyingbats.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "../definitions.h"
 #include "../utils/mem_pool.h"
@@ -16,7 +17,7 @@
 #define LATERAL_SPEED 10.f / 255.f
 
 #define MAX_ENEMIES 20
-#define ENEMY_SIZE 10
+#define ENEMY_SIZE 14
 #define ENEMY_SPEED_INIT 1.5f
 #define ENEMY_SPEED_INC .1f
 
@@ -46,6 +47,8 @@ typedef struct fb_minigame_data {
     bool isNewRecord;
     size_t secondsRecord;
     size_t seconds;
+    size_t animCounter;
+    timer_link_t *animTimer;
     timer_link_t *timeTimer;
     timer_link_t *speedTimer;
     timer_link_t *postStartTimer;
@@ -53,11 +56,12 @@ typedef struct fb_minigame_data {
     FB_PlayerData playerOne;
     FB_EnemyData enemies[MAX_ENEMIES];
     float currentEnemySpeed;
+    sprite_t *sprites;
 } FB_MiniGameData;
 
 FB_MiniGameData* fb_data;
 char* fb_time_string; // format mm:ss\0
-char* fb_record_string; // format - mm:ss\0
+char* fb_record_string; // format mm:ss\0
 
 void increase_speed(int ovfl) {
     fb_data->currentEnemySpeed += ENEMY_SPEED_INC;
@@ -68,6 +72,7 @@ void post_start(int ovfl) {
 }
 
 void die() {
+    stop_timer(fb_data->animTimer);
     stop_timer(fb_data->timeTimer);
 
     // check if record
@@ -96,6 +101,10 @@ void time_inc(int ovfl) {
     set_time();
 }
 
+void anim_update(int ovfl) {
+    ++fb_data->animCounter;
+}
+
 void minigame_flyingbats_create() {
     fb_data = mem_zone_alloc(&memory_pool, sizeof(FB_MiniGameData));
     fb_data->state = FB_START;
@@ -108,15 +117,15 @@ void minigame_flyingbats_create() {
     fb_time_string = mem_zone_alloc(&memory_pool, sizeof(char)*9); // format mm:ss\0
     set_time();
 
-    fb_record_string = mem_zone_alloc(&memory_pool, sizeof(char)*11); // format - mm:ss\0
+    fb_record_string = mem_zone_alloc(&memory_pool, sizeof(char)*9); // format - mm:ss\0
     char record_minutes = fb_data->secondsRecord / 60;
     char record_seconds = fb_data->secondsRecord % 60;
-    snprintf(fb_record_string, 10, "%02d:%02d", record_minutes, record_seconds);
+    snprintf(fb_record_string, 8, "%02d:%02d", record_minutes, record_seconds);
 
     fb_data->playerOne.rect.pos.x = 20;
     fb_data->playerOne.rect.pos.y = 20;
-    fb_data->playerOne.rect.size.width = 20;
-    fb_data->playerOne.rect.size.height = 20;
+    fb_data->playerOne.rect.size.width = 11;
+    fb_data->playerOne.rect.size.height = 11;
     fb_data->playerOne.color = BLUE;
     fb_data->playerOne.alive = true;
 
@@ -128,12 +137,20 @@ void minigame_flyingbats_create() {
     }
     fb_data->currentEnemySpeed = ENEMY_SPEED_INIT;
 
+    fb_data->animTimer = new_timer(TIMER_TICKS(SECOND / 10), TF_CONTINUOUS, anim_update);
     fb_data->timeTimer = new_timer(TIMER_TICKS(SECOND), TF_CONTINUOUS, time_inc);
     fb_data->speedTimer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
     fb_data->postStartTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_start);
+
+    int fp = dfs_open("/flying_bat.sprite");
+    fb_data->sprites = malloc(dfs_size(fp));
+    dfs_read(fb_data->sprites, 1, dfs_size(fp), fp);
+    dfs_close(fp);
 }
 
 void minigame_flyingbats_destroy() {
+    free(fb_data->sprites);
+    delete_timer(fb_data->animTimer);
     delete_timer(fb_data->timeTimer);
     delete_timer(fb_data->speedTimer);
     delete_timer(fb_data->postStartTimer);
@@ -228,12 +245,15 @@ void minigame_flyingbats_display(display_context_t disp) {
 
     for (size_t i = 0; i < MAX_ENEMIES; ++i) {
         if (contains(fb_data->enemies[i].rect, screen_rect)) {
-            DRAW_RECT(disp, fb_data->enemies[i].rect, RED);
+            // DRAW_RECT(disp, fb_data->enemies[i].rect, RED);
+            graphics_draw_sprite_trans_stride(disp, fb_data->enemies[i].rect.pos.x - 9, fb_data->enemies[i].rect.pos.y - 9, fb_data->sprites, (fb_data->animCounter % 2) + 4);
         }
     }
 
     if (is_intersecting(fb_data->playerOne.rect, screen_rect)) {
-        DRAW_RECT(disp, fb_data->playerOne.rect, fb_data->playerOne.alive ? fb_data->playerOne.color : GRAY);
+        // DRAW_RECT(disp, fb_data->playerOne.rect, RED);
+        size_t animCounter = fb_data->playerOne.speed.y >= 0 ? fb_data->animCounter : fb_data->animCounter*2;
+        graphics_draw_sprite_trans_stride(disp, fb_data->playerOne.rect.pos.x - 11, fb_data->playerOne.rect.pos.y - 13, fb_data->sprites, animCounter % 4);
     }
 
     if (fb_data->state == FB_START) {
@@ -245,8 +265,8 @@ void minigame_flyingbats_display(display_context_t disp) {
         graphics_draw_text(disp, (RES_X/2)-20, (RES_Y/2)-20, "-DEAD-");
     }
 
-    graphics_set_color(WHITE, BLACK);
+    graphics_set_color(WHITE, TRANSP);
     graphics_draw_text(disp, SCREEN_LEFT, SCREEN_TOP, fb_time_string);
-    graphics_set_color(GRAY, BLACK);
+    graphics_set_color(GRAY, TRANSP);
     graphics_draw_text(disp, SCREEN_LEFT + 45, SCREEN_TOP, fb_record_string);
 }

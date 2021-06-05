@@ -3,6 +3,7 @@ ROOTDIR = $(N64_INST)
 GCCN64PREFIX = $(ROOTDIR)/bin/mips64-elf-
 CHKSUM64PATH = $(ROOTDIR)/bin/chksum64
 MKDFSPATH = $(ROOTDIR)/bin/mkdfs
+MKSPRITEPATH= $(ROOTDIR)/bin/mksprite
 HEADERPATH = $(ROOTDIR)/mips64-elf/lib
 N64TOOL = $(ROOTDIR)/bin/n64tool
 HEADERNAME = header
@@ -33,18 +34,19 @@ ROM_DEPLOY_PATH = "./../"
 $(PROG_NAME).elf : $(OBJS)
 	$(LD) -o $(PROG_NAME).elf $^ $(LINK_FLAGS)
 
-$(PROG_NAME)$(ROM_EXTENSION): $(PROG_NAME).elf
+$(PROG_NAME)$(ROM_EXTENSION): $(PROG_NAME).elf packed_files.dfs
 	$(OBJCOPY) $(PROG_NAME).elf $(PROG_NAME).bin -O binary
 	rm -f $(PROG_NAME)$(ROM_EXTENSION)
-	$(N64TOOL) $(N64_FLAGS) -t $(PROG_TAG) $(PROG_NAME).bin
+	$(N64TOOL) $(N64_FLAGS) -t $(PROG_TAG) $(PROG_NAME).bin -s 1M packed_files.dfs
 	$(CHKSUM64PATH) $(PROG_NAME)$(ROM_EXTENSION)
 
 #pack our icons.sprite into dfs (Dragon File System)
 #$(MKSPRITEPATH), 16 bits 1 column, 17 rows of sprites (17 sprites total) used
 #to convert spritesheet.png into compat. Dragon format
-# packed_files.dfs:
-# 	$(MKSPRITEPATH) 16 1 31 ./res/spritesheet.png ./res/spritesheet.sprite 
-# 	$(MKDFSPATH) packed_files.dfs ./res/
+packed_files.dfs:
+	mkdir -p res
+	$(MKSPRITEPATH) 16 4 2 ./raw/flying_bat.png ./res/flying_bat.sprite 
+	$(MKDFSPATH) packed_files.dfs ./res/
 
 all: $(PROG_NAME)$(ROM_EXTENSION)
 	@echo end
@@ -57,4 +59,6 @@ clean:
 	find . -name '*.o' -delete
 	find . -name '*.bin' -delete
 	find . -name '*.plan_bak*' -delete
+	find . -name '*.sprite' -delete
+	find . -name '*.dfs' -delete
 	rm -f ../*.z64 ../*.n64

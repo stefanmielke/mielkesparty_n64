@@ -75,12 +75,14 @@ void setup() {
 
     /* Initialize peripherals */
     display_init(SCREEN_RESOLUTION, DEPTH_16_BPP, NUM_BUFFERS, GAMMA_NONE, ANTIALIAS_RESAMPLE);
+    dfs_init(DFS_DEFAULT_LOCATION);
     rdp_init();
     controller_init();
     timer_init();
 
     mem_zone_init(&memory_pool, 1 * 1024);
 
+    TRANSP = graphics_make_color(0, 0, 0, 0);
     WHITE = graphics_make_color(255, 255, 255, 255);
     BLACK = graphics_make_color(0, 0, 0, 255);
     RED = graphics_make_color(255, 100, 100, 255);

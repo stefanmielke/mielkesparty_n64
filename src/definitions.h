@@ -13,7 +13,7 @@
 #define SCREEN_RIGHT (RES_X - SCREEN_BORDER)
 #define SCREEN_BOTTOM (RES_Y - SCREEN_BORDER)
 
-uint32_t WHITE, BLACK, RED, GREEN, BLUE, GRAY;
+uint32_t TRANSP, WHITE, BLACK, RED, GREEN, BLUE, GRAY;
 
 #define RANDN(max) (rand() % (max))
 #define RANDR(min, max) ((rand() % ( (max) - (min) + 1 )) + (min))

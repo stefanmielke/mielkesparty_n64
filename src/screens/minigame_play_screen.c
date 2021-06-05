@@ -61,6 +61,6 @@ void minigame_play_screen_display(display_context_t disp) {
     play_screen_data->display(disp);
 
     /* Set the text output color */
-    graphics_set_color(GRAY, BLACK);
+    graphics_set_color(GRAY, TRANSP);
     graphics_draw_text(disp, SCREEN_BORDER, SCREEN_BOTTOM - 20, "START to exit");
 }

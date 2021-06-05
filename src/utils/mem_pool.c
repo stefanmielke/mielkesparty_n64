@@ -1,5 +1,7 @@
 #include "mem_pool.h"
 
+#include <string.h>
+
 #include <libdragon.h>
 
 void mem_zone_init(MemZone *z, size_t size) {
