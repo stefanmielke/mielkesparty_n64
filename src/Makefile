@@ -26,8 +26,8 @@ N64_FLAGS = -l 2M -h $(HEADERPATH)/$(HEADERNAME) -o $(PROG_NAME)$(ROM_EXTENSION)
 endif
 
 #your program name
-PROG_NAME = platformer
-PROG_TAG = "Platformer"
+PROG_NAME = mielke_party
+PROG_TAG = "MielkeParty"
 ROM_DEPLOY_PATH = "./../"
 
 $(PROG_NAME).elf : $(OBJS)
