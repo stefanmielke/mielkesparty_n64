@@ -1,5 +1,7 @@
 #pragma once
 
+#include "minigames.h"
+
 #define RES_X 320
 #define RES_Y 240
 #define SCREEN_RESOLUTION RESOLUTION_320x240
@@ -17,3 +19,8 @@ uint32_t WHITE, BLACK, RED, GREEN, BLUE, GRAY;
 #define RANDR(min, max) ((rand() % ( (max) - (min) + 1 )) + (min))
 
 #define SECOND 1000000
+
+typedef struct save_file {
+    uint8_t check; // 0 if can't save, 1 if it can and is loaded
+    int times[MINIGAME_MAX-1]; // time for each minigame (disregarding MINIGAME_NONE, so use -1 when using it)
+} SaveFile;

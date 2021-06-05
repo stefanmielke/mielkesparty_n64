@@ -2,7 +2,8 @@
 
 typedef enum minigame {
     MINIGAME_NONE,
-    MINIGAME_FLYINGBATS
+    MINIGAME_FLYINGBATS,
+    MINIGAME_MAX
 } MiniGame;
 
 typedef void (*fnGameCreate)();

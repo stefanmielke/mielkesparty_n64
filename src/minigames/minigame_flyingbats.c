@@ -41,6 +41,10 @@ typedef enum fb_state {
 
 typedef struct fb_minigame_data {
     FB_State state;
+    bool wantsToSave;
+    bool saving;
+    bool isNewRecord;
+    size_t secondsRecord;
     size_t seconds;
     timer_link_t *timeTimer;
     timer_link_t *speedTimer;
@@ -53,6 +57,7 @@ typedef struct fb_minigame_data {
 
 FB_MiniGameData* fb_data;
 char* fb_time_string; // format mm:ss\0
+char* fb_record_string; // format - mm:ss\0
 
 void increase_speed(int ovfl) {
     fb_data->currentEnemySpeed += ENEMY_SPEED_INC;
@@ -64,28 +69,49 @@ void post_start(int ovfl) {
 
 void die() {
     stop_timer(fb_data->timeTimer);
+
+    // check if record
+    if (fb_data->seconds > fb_data->secondsRecord) {
+        fb_data->isNewRecord = true;
+        game_save.times[MINIGAME_FLYINGBATS-1] = fb_data->seconds;
+    }
+
     fb_data->playerOne.alive = false;
     fb_data->state = FB_DYING;
 }
 
 void post_death(int ovfl) {
     fb_data->state = FB_DEAD;
+    fb_data->wantsToSave = true;
 }
 
-void time_inc(int ovfl) {
-    ++fb_data->seconds;
+void set_time() {
     char minutes = fb_data->seconds / 60;
     char seconds = fb_data->seconds % 60;
     snprintf(fb_time_string, 8, "%02d:%02d", minutes, seconds);
 }
 
-void minigame_flyingbats_create() {
-    fb_time_string = mem_zone_alloc(&memory_pool, sizeof(char)*8); // format mm:ss\0
-    fb_time_string = "00:00\0";
+void time_inc(int ovfl) {
+    ++fb_data->seconds;
+    set_time();
+}
 
+void minigame_flyingbats_create() {
     fb_data = mem_zone_alloc(&memory_pool, sizeof(FB_MiniGameData));
     fb_data->state = FB_START;
     fb_data->seconds = 0;
+    fb_data->saving = false;
+    fb_data->wantsToSave = false;
+    fb_data->isNewRecord = false;
+    fb_data->secondsRecord = game_save.times[MINIGAME_FLYINGBATS-1];
+
+    fb_time_string = mem_zone_alloc(&memory_pool, sizeof(char)*9); // format mm:ss\0
+    set_time();
+
+    fb_record_string = mem_zone_alloc(&memory_pool, sizeof(char)*11); // format - mm:ss\0
+    char record_minutes = fb_data->secondsRecord / 60;
+    char record_seconds = fb_data->secondsRecord % 60;
+    snprintf(fb_record_string, 10, "%02d:%02d", record_minutes, record_seconds);
 
     fb_data->playerOne.rect.pos.x = 20;
     fb_data->playerOne.rect.pos.y = 20;
@@ -115,6 +141,16 @@ void minigame_flyingbats_destroy() {
 }
 
 bool minigame_flyingbats_tick() {
+    if (fb_data->saving) {
+        save_write(game_save);
+
+        fb_data->saving = false;
+        fb_data->wantsToSave = false;
+    }
+    if (fb_data->wantsToSave) {
+        fb_data->saving = true;
+    }
+
     if (fb_data->state == FB_DEAD || fb_data->state == FB_DYING)
         return true;
 
@@ -180,8 +216,13 @@ void minigame_flyingbats_display(display_context_t disp) {
         graphics_draw_text(disp, (RES_X/2)-20, (RES_Y/2)-20, "-DEAD-");
         graphics_set_color(WHITE, BLACK);
         graphics_draw_text(disp, (RES_X/2)-60, (RES_Y/2) + 10, "Total Time:");
-        graphics_set_color(GREEN, BLACK);
+        graphics_set_color(fb_data->isNewRecord ? GREEN : WHITE, BLACK);
         graphics_draw_text(disp, (RES_X/2)+30, (RES_Y/2) + 10, fb_time_string);
+
+        if (fb_data->wantsToSave) {
+            graphics_set_color(RED, BLACK);
+            graphics_draw_text(disp, (RES_X/2)-30, SCREEN_BOTTOM - 20, "SAVING NEW TIME...");
+        }
         return;
     }
 
@@ -206,4 +247,6 @@ void minigame_flyingbats_display(display_context_t disp) {
 
     graphics_set_color(WHITE, BLACK);
     graphics_draw_text(disp, SCREEN_LEFT, SCREEN_TOP, fb_time_string);
+    graphics_set_color(GRAY, BLACK);
+    graphics_draw_text(disp, SCREEN_LEFT + 45, SCREEN_TOP, fb_record_string);
 }

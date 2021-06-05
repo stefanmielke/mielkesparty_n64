@@ -1,5 +1,7 @@
 #include <libdragon.h>
 
+#include <string.h>
+
 #include "definitions.h"
 #include "minigames.h"
 #include "utils/mem_pool.h"
@@ -30,6 +32,10 @@ MiniGame selected_minigame = MINIGAME_NONE;
 
 void change_screen(ScreenType next_screen);
 void setup();
+
+SaveFile game_save;
+void save_write(SaveFile save);
+SaveFile save_read();
 
 int main() {
     setup();
@@ -91,6 +97,13 @@ void setup() {
     if (eeprom_present() == EEPROM_NONE) {
         next_screen = SCREEN_NOSAVE;
     }
+    else {
+        game_save = save_read();
+        if (game_save.check == 0) {
+            game_save.check = 1;
+            save_write(game_save);
+        }
+    }
 }
 
 void change_screen(ScreenType next_screen) {
@@ -138,4 +151,49 @@ void change_screen(ScreenType next_screen) {
     screen_current = next_screen;
 
     screen_create();
+}
+
+void save_write(SaveFile save) {
+    if (eeprom_present() == EEPROM_NONE)
+        return;
+
+    uint8_t buffer[sizeof(save)];
+    memcpy(buffer, (uint8_t*)&save, sizeof(save));
+    
+    eeprom_write(0, &save.check);
+    for (size_t i = 0; i < sizeof(buffer); ++i) {
+        eeprom_write(i+1, &buffer[i]);
+    }
+}
+
+SaveFile save_read() {
+    SaveFile save;
+
+    // no EEPROM, return default save
+    if (eeprom_present() == EEPROM_NONE) {
+        save.check = 0;
+        for (size_t i = 0; i < MINIGAME_MAX - 1; ++i) {
+            save.times[i] = 0;
+        }
+        return save;
+    }
+
+    // check first byte to see if it exists, if not, loads default
+    eeprom_read(0, &save.check);
+    if (save.check <= 0) {
+        save.check = 0;
+        for (size_t i = 0; i < MINIGAME_MAX - 1; ++i) {
+            save.times[i] = 0;
+        }
+        return save;
+    }
+
+    uint8_t buffer[sizeof(save)];
+    for (size_t i = 0; i < sizeof(buffer); ++i) {
+        eeprom_read(i+1, &buffer[i]);
+    }
+
+    memcpy(&save, buffer, sizeof(save));
+    
+    return save;
 }
