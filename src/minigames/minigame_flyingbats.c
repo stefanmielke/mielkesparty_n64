@@ -174,7 +174,7 @@ bool minigame_flyingbats_tick() {
     fb_data->playerOne.speed.y += GRAVITY;
     if (fb_data->playerOne.speed.y < -MAX_SPEED_UP)
         fb_data->playerOne.speed.y = -MAX_SPEED_UP;
-    if (fb_data->playerOne.speed.y > MAX_SPEED_DOWN)
+    else if (fb_data->playerOne.speed.y > MAX_SPEED_DOWN)
         fb_data->playerOne.speed.y = MAX_SPEED_DOWN;
 
     fb_data->playerOne.rect.pos.y += fb_data->playerOne.speed.y;
@@ -192,7 +192,7 @@ bool minigame_flyingbats_tick() {
         fb_data->playerOne.jumped = true;
         fb_data->playerOne.speed.y = -JUMP_SPEED;
     }
-    if (fb_data->playerOne.jumped && !keys_held.c[0].A) {
+    else if (fb_data->playerOne.jumped && !keys_held.c[0].A) {
         fb_data->playerOne.jumped = false;
     }
 
