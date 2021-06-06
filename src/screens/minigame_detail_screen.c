@@ -7,33 +7,42 @@
 #include "screen_defs.h"
 #include "../minigames.h"
 #include "../utils/mem_pool.h"
+#include "../gfx_h/gfx_interface.h"
+#include "../gfx_h/gfx_minigame_detail.h"
 
+sprite_t* md_sprites;
 char* det_sc_time_string;
 const char* get_minigame_name(int* offset_x);
 const char* get_minigame_record();
 const char* get_minigame_description();
 const char* get_minigame_controls();
+void draw_minigame_controls(display_context_t disp, int start_x, int start_y);
 
 void minigame_detail_screen_create() {
     det_sc_time_string = mem_zone_alloc(&memory_pool, sizeof(char)*9); // format Record: mm:ss\0
     for (size_t i = 0; i < 4; ++i) {
         players_ready[i] = false;
     }
+    alloc_and_load_spritesheet_minigame_detail(md_sprites);
 }
 
 ScreenType minigame_detail_screen_tick() {
     for (int i = 0; i < 4; ++i) {
         if (players_ready[i]) {
-            if (keys_released.c[i].start)
+            if (keys_released.c[i].start) {
+                free(md_sprites);
                 return SCREEN_MINIGAME_PLAY;
+            }
             if (keys_released.c[i].B)
                 players_ready[i] = false;
         }
         else {
             if (keys_released.c[i].A)
                 players_ready[i] = true;
-            if (keys_released.c[i].B)
+            if (keys_released.c[i].B) {
+                free(md_sprites);
                 return SCREEN_INFINITE_MENU;
+            }
         }
     }
 
@@ -41,7 +50,6 @@ ScreenType minigame_detail_screen_tick() {
 }
 
 void minigame_detail_screen_display(display_context_t disp) {
-
     { // name
         int offset_x;
         graphics_set_color(BLUE, TRANSP);
@@ -50,7 +58,8 @@ void minigame_detail_screen_display(display_context_t disp) {
     }
     { // record
         graphics_set_color(GREEN, TRANSP);
-        graphics_draw_text(disp, RES_X / 2 - 4, SCREEN_TOP + 20, get_minigame_record());
+        graphics_draw_sprite_trans_stride(disp, RES_X / 2 - 14, SCREEN_TOP + 15, ui_sprites, SPRITE_record);
+        graphics_draw_text(disp, RES_X / 2 + 4, SCREEN_TOP + 20, get_minigame_record());
     }
     // todo: draw minigame image/video
     { // description
@@ -62,30 +71,27 @@ void minigame_detail_screen_display(display_context_t disp) {
     graphics_draw_line(disp, RES_X / 2 + 46, SCREEN_TOP, RES_X / 2 + 46, SCREEN_BOTTOM, GRAY);
 
     // controls
-    graphics_draw_text(disp, RES_X / 2 + 52, SCREEN_TOP + 30, get_minigame_controls());
+    draw_minigame_controls(disp, RES_X / 2 + 52, SCREEN_TOP + 30);
 
     { // player controller info
+        int start_x = RES_X / 2 + 67;
+        int start_y = SCREEN_BOTTOM - 90;
+        int offset = 38;
         bool p1_connected = connected_controllers & CONTROLLER_1_INSERTED;
-        uint32_t p1_color = players_ready[0] ? GREEN : p1_connected ? GRAY : DARK_GRAY;
-        const char *p1_text = players_ready[0] ? "PLAYER 1 (B)" : "PLAYER 1 (A)";
-        bool p2_connected = connected_controllers & CONTROLLER_2_INSERTED;
-        uint32_t p2_color = players_ready[1] ? GREEN : p2_connected ? GRAY : DARK_GRAY;
-        const char *p2_text = players_ready[0] ? "PLAYER 2 (B)" : "PLAYER 2 (A)";
-        bool p3_connected = connected_controllers & CONTROLLER_3_INSERTED;
-        uint32_t p3_color = players_ready[2] ? GREEN : p3_connected ? GRAY : DARK_GRAY;
-        const char *p3_text = players_ready[0] ? "PLAYER 3 (B)" : "PLAYER 3 (A)";
-        bool p4_connected = connected_controllers & CONTROLLER_4_INSERTED;
-        uint32_t p4_color = players_ready[3] ? GREEN : p4_connected ? GRAY : DARK_GRAY;
-        const char *p4_text = players_ready[0] ? "PLAYER 4 (B)" : "PLAYER 4 (A)";
+        int p1_sprite_offset = !p1_connected ? SPRITE_player_1_disconnected : players_ready[0] ? SPRITE_player_1_ready : SPRITE_player_1_not_ready;
+        graphics_draw_sprite_trans_stride(disp, start_x, start_y, md_sprites, p1_sprite_offset);
 
-        graphics_set_color(p1_color, TRANSP);
-        graphics_draw_text(disp, RES_X / 2 + 56, SCREEN_BOTTOM - 80, p1_text);
-        graphics_set_color(p2_color, TRANSP);
-        graphics_draw_text(disp, RES_X / 2 + 56, SCREEN_BOTTOM - 65, p2_text);
-        graphics_set_color(p3_color, TRANSP);
-        graphics_draw_text(disp, RES_X / 2 + 56, SCREEN_BOTTOM - 50, p3_text);
-        graphics_set_color(p4_color, TRANSP);
-        graphics_draw_text(disp, RES_X / 2 + 56, SCREEN_BOTTOM - 35, p4_text);
+        bool p2_connected = connected_controllers & CONTROLLER_2_INSERTED;
+        int p2_sprite_offset = !p2_connected ? SPRITE_player_2_disconnected : players_ready[1] ? SPRITE_player_2_ready : SPRITE_player_2_not_ready;
+        graphics_draw_sprite_trans_stride(disp, start_x + offset, start_y, md_sprites, p2_sprite_offset);
+
+        bool p3_connected = connected_controllers & CONTROLLER_3_INSERTED;
+        int p3_sprite_offset = !p3_connected ? SPRITE_player_3_disconnected : players_ready[2] ? SPRITE_player_3_ready : SPRITE_player_3_not_ready;
+        graphics_draw_sprite_trans_stride(disp, start_x, start_y + offset, md_sprites, p3_sprite_offset);
+
+        bool p4_connected = connected_controllers & CONTROLLER_4_INSERTED;
+        int p4_sprite_offset = !p4_connected ? SPRITE_player_4_disconnected : players_ready[3] ? SPRITE_player_4_ready : SPRITE_player_4_not_ready;
+        graphics_draw_sprite_trans_stride(disp, start_x + offset, start_y + offset, md_sprites, p4_sprite_offset);
     }
 
     { // ready text
@@ -100,10 +106,6 @@ void minigame_detail_screen_display(display_context_t disp) {
         if (any_ready) {
             graphics_set_color(RED, TRANSP);
             graphics_draw_text(disp, RES_X / 2 + 60, SCREEN_BOTTOM - 10, "PRESS START");
-        }
-        else {
-            graphics_set_color(BLUE, TRANSP);
-            graphics_draw_text(disp, RES_X / 2 + 68, SCREEN_BOTTOM - 10, "A > READY");
         }
     }
 
@@ -131,11 +133,11 @@ const char* get_minigame_record() {
                 int time = game_save.times[MINIGAME_FLYINGBATS-1];
                 size_t minutes = time / 60;
                 size_t seconds = time % 60;
-                snprintf(det_sc_time_string, 8, "%02d:%02d!", minutes, seconds);
+                snprintf(det_sc_time_string, 8, "%02d:%02d", minutes, seconds);
                 return det_sc_time_string;
             }
         default:
-            return "No Record";
+            return "None";
     }
 }
 
@@ -148,11 +150,24 @@ const char* get_minigame_description() {
     }
 }
 
-const char* get_minigame_controls() {
+void draw_minigame_controls(display_context_t disp, int start_x, int start_y) {
+    graphics_set_color(WHITE, TRANSP);
+
     switch (selected_minigame) {
         case MINIGAME_FLYINGBATS:
-            return "Stick\nD-Pad: Move\n\n\nA: Fly";
+        {
+            start_x += 20;
+            //return "Stick\nD-Pad: Move\n\n\nA: Fly";
+            graphics_draw_sprite_trans_stride(disp, start_x, start_y, ui_sprites, SPRITE_joystick);
+            graphics_draw_sprite_trans_stride(disp, start_x, start_y + 17, ui_sprites, SPRITE_dpad);
+            graphics_draw_text(disp, start_x + 24, start_y + 14, "Move");
+
+            graphics_draw_sprite_trans_stride(disp, start_x, start_y + 50, ui_sprites, SPRITE_buttonA);
+            graphics_draw_text(disp, start_x + 24, start_y + 54, "Fly");
+        } break;
         default:
-            return "No controls";
+        {
+            graphics_draw_text(disp, start_x, start_y, "No controls");
+        } break;
     }
 }

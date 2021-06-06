@@ -43,6 +43,8 @@ $(PROG_NAME)$(ROM_EXTENSION): $(PROG_NAME).elf packed_files.dfs
 packed_files.dfs:
 	mkdir -p res
 	$(MKSPRITEPATH) 16 7 1 ./raw/flying_bat.png ./res/flying_bat.sprite
+	$(MKSPRITEPATH) 16 7 1 ./raw/interface.png ./res/interface.sprite
+	$(MKSPRITEPATH) 16 12 1 ./raw/minigame_detail.png ./res/minigame_detail.sprite
 	$(MKDFSPATH) packed_files.dfs ./res/
 
 all: $(PROG_NAME)$(ROM_EXTENSION)

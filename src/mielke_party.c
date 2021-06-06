@@ -14,6 +14,7 @@
 #include "screens/infinite_menu_screen.h"
 #include "screens/minigame_detail_screen.h"
 #include "screens/minigame_play_screen.h"
+#include "gfx_h/gfx_interface.h"
 
 ScreenType screen_current = SCREEN_NONE;
 ScreenType next_screen = SCREEN_MAIN;
@@ -28,6 +29,7 @@ struct controller_data keys_released;
 int connected_controllers;
 
 MemZone memory_pool;
+sprite_t *ui_sprites;
 
 MiniGame selected_minigame = MINIGAME_NONE;
 bool players_ready[4];
@@ -42,7 +44,6 @@ SaveFile save_read();
 int main() {
     setup();
 
-    /* Main loop test */
     while(1) {
         if (next_screen != SCREEN_NONE && screen_current != next_screen)
             change_screen(next_screen);
@@ -63,7 +64,7 @@ int main() {
         screen_display(disp);
 
         if (next_screen != SCREEN_NONE && screen_current != next_screen) {
-            graphics_set_color( 0xFFFFFFFF, 0x0 );
+            graphics_set_color(WHITE, BLACK);
             graphics_draw_text(disp, SCREEN_BORDER, RES_Y - SCREEN_BORDER - 20, "Loading next screen...");
         }
 
@@ -83,6 +84,8 @@ void setup() {
     timer_init();
 
     mem_zone_init(&memory_pool, 1 * 1024);
+
+    alloc_and_load_spritesheet_interface(ui_sprites);
 
     TRANSP = graphics_make_color(0, 0, 0, 0);
     WHITE = graphics_make_color(255, 255, 255, 255);
