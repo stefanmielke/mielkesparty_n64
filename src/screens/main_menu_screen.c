@@ -60,7 +60,4 @@ void main_menu_screen_display(display_context_t disp) {
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 40, "Multiplayer");
     graphics_set_color(menu_screen->currentMenuItem == 3 ? RED : WHITE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 60, "Back");
-
-    graphics_set_color(WHITE, BLACK);
-    graphics_draw_text(disp, SCREEN_BORDER, SCREEN_BOTTOM, menu_screen->canPress[0] ? "Can Press" : "No press");
 }

@@ -33,14 +33,14 @@ void menu_screen_end_tick() {
         else if (i == 3 && !(connected_controllers & CONTROLLER_4_INSERTED))
             continue;
 
-        if (keys_held.c[i].up) {
+        if (keys_held.c[i].up || keys_held.c[i].y > DEADZONE) {
             if (menu_screen->canPress[i]) {
                 --menu_screen->currentMenuItem;
                 menu_screen->canPress[i] = false;
                 restart_timer(menu_screen->repeatTimer[i]);
             }
         }
-        else if (keys_held.c[i].down) {
+        else if (keys_held.c[i].down || keys_held.c[i].y < -DEADZONE) {
             if (menu_screen->canPress[i]) {
                 ++menu_screen->currentMenuItem;
                 menu_screen->canPress[i] = false;

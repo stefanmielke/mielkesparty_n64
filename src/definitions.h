@@ -13,6 +13,8 @@
 #define SCREEN_RIGHT (RES_X - SCREEN_BORDER)
 #define SCREEN_BOTTOM (RES_Y - SCREEN_BORDER)
 
+#define DEADZONE 10
+
 uint32_t TRANSP, WHITE, BLACK, RED, GREEN, BLUE, GRAY;
 
 #define RANDN(max) (rand() % (max))
