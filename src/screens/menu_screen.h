@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-#include "../../libs/libdragon/include/libdragon.h"
+#include <libdragon.h>
 
 typedef struct menu_screen {
     char currentMenuItem;

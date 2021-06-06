@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../libs/libdragon/include/libdragon.h"
+#include <libdragon.h>
 
 void minigame_flyingbats_create();
 bool minigame_flyingbats_tick();

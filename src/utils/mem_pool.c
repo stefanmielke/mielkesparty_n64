@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#include "../../libs/libdragon/include/libdragon.h"
+#include <libdragon.h>
 
 void mem_zone_init(MemZone *z, size_t size) {
     disable_interrupts();

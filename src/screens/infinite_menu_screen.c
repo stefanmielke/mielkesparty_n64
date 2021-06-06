@@ -1,6 +1,6 @@
 #include "infinite_menu_screen.h"
 
-#include "../../libs/libdragon/include/libdragon.h"
+#include <libdragon.h>
 
 #include "../definitions.h"
 #include "screen_defs.h"

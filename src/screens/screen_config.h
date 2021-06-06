@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../libs/libdragon/include/libdragon.h"
+#include <libdragon.h>
 
 typedef enum screen_type {
     SCREEN_NONE,
