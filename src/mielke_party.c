@@ -30,6 +30,7 @@ int connected_controllers;
 MemZone memory_pool;
 
 MiniGame selected_minigame = MINIGAME_NONE;
+bool players_ready[4];
 
 void change_screen(ScreenType next_screen);
 void setup();
@@ -90,6 +91,7 @@ void setup() {
     GREEN = graphics_make_color(100, 255, 100, 255);
     BLUE = graphics_make_color(100, 100, 255, 255);
     GRAY = graphics_make_color(100, 100, 100, 255);
+    DARK_GRAY = graphics_make_color(40, 40, 40, 255);
 
     screen_rect.pos.x = SCREEN_LEFT;
     screen_rect.pos.y = SCREEN_TOP;

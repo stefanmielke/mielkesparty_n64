@@ -15,7 +15,7 @@
 
 #define DEADZONE 10
 
-uint32_t TRANSP, WHITE, BLACK, RED, GREEN, BLUE, GRAY;
+uint32_t TRANSP, WHITE, BLACK, RED, GREEN, BLUE, GRAY, DARK_GRAY;
 
 #define RANDN(max) (rand() % (max))
 #define RANDR(min, max) ((rand() % ( (max) - (min) + 1 )) + (min))

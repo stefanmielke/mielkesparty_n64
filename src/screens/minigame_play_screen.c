@@ -1,18 +1,14 @@
 #include "minigame_play_screen.h"
 
+#include <stdio.h>
+
 #include <libdragon.h>
 
 #include "../definitions.h"
 #include "screen_defs.h"
 #include "../minigames.h"
 #include "../utils/mem_pool.h"
-
 #include "../minigames/minigame_flyingbats.h"
-
-#include <stdio.h>
-
-extern MemZone memory_pool;
-extern MiniGame selected_minigame;
 
 typedef struct minigame_screen {
     fnGameCreate create;

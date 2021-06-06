@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../utils/mem_pool.h"
+#include "../screens/minigame_detail_screen.h"
 
 // game globals
 extern MemZone memory_pool;
@@ -9,6 +10,8 @@ extern struct controller_data keys_released;
 extern int connected_controllers;
 extern Rect screen_rect;
 extern SaveFile game_save;
+extern bool players_ready[4];
+
 extern void save_write(SaveFile save);
 extern SaveFile save_read();
 
