@@ -7,10 +7,10 @@
 #include "menu_screen.h"
 #include "../minigames.h"
 #include "../utils/mem_pool.h"
+#include "../gfx_h/gfx_interface.h"
 
 enum menu_items {
     IM_FlyingBats,
-    IM_Back,
     IM_MaxItems
 };
 
@@ -33,9 +33,6 @@ ScreenType infinite_menu_screen_tick() {
                 menu_screen_destroy();
                 selected_minigame = MINIGAME_FLYINGBATS;
                 return SCREEN_MINIGAME_DETAIL;
-            case IM_Back:
-                menu_screen_destroy();
-                return SCREEN_MAIN_MENU;
             }
     }
 
@@ -51,6 +48,6 @@ void infinite_menu_screen_display(display_context_t disp) {
 
     graphics_set_color(menu_screen->currentMenuItem == IM_FlyingBats ? RED : WHITE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2), "Flying Bats");
-    graphics_set_color(menu_screen->currentMenuItem == IM_Back ? RED : WHITE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2) + 20, "Back");
+
+    DRAW_BACK_BUTTON();
 }

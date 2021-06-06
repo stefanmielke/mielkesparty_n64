@@ -6,12 +6,12 @@
 #include "screen_defs.h"
 #include "menu_screen.h"
 #include "../utils/mem_pool.h"
+#include "../gfx_h/gfx_interface.h"
 
 enum menu_items {
     MM_Infinite,
     MM_Score,
     MM_Multiplayer,
-    MM_Back,
     MM_MaxItems
 };
 
@@ -36,9 +36,6 @@ ScreenType main_menu_screen_tick() {
             case MM_Score:
             case MM_Multiplayer:
                 break;
-            case MM_Back:
-                menu_screen_destroy();
-                return SCREEN_MAIN;
             }
     }
 
@@ -58,6 +55,6 @@ void main_menu_screen_display(display_context_t disp) {
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 20, "Score");
     graphics_set_color(menu_screen->currentMenuItem == 2 ? RED : GRAY, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 40, "Multiplayer");
-    graphics_set_color(menu_screen->currentMenuItem == 3 ? RED : WHITE, BLACK);
-    graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 60, "Back");
+
+    DRAW_BACK_BUTTON();
 }

@@ -73,7 +73,7 @@ void minigame_detail_screen_display(display_context_t disp) {
     // controls
     draw_minigame_controls(disp, RES_X / 2 + 52, SCREEN_TOP + 30);
 
-    { // player controller info
+    { // player state
         int start_x = RES_X / 2 + 67;
         int start_y = SCREEN_BOTTOM - 90;
         int offset = 38;
@@ -109,10 +109,7 @@ void minigame_detail_screen_display(display_context_t disp) {
         }
     }
 
-    { // go back
-        graphics_set_color(GRAY, TRANSP);
-        graphics_draw_text(disp, SCREEN_LEFT + 20, SCREEN_BOTTOM - 10, "Press B to go back");
-    }
+    DRAW_BACK_BUTTON();
 }
 
 const char* get_minigame_name(int* offset_x) {

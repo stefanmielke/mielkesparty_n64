@@ -7,6 +7,8 @@
 
 typedef enum _interface_sprites { 
     SPRITE_buttonA,
+    SPRITE_buttonB,
+    SPRITE_buttonBack,
     SPRITE_buttonL,
     SPRITE_buttonR,
     SPRITE_buttonStart,

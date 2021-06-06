@@ -198,6 +198,22 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">buttonB.png</key>
+            <key type="filename">buttonBack.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0,0</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,4,8,8</rect>
+                <key>scale9Paddings</key>
+                <rect>4,4,8,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">buttonL.png</key>
             <key type="filename">buttonR.png</key>
             <struct type="IndividualSpriteSettings">
@@ -254,6 +270,8 @@
             <filename>dpad.png</filename>
             <filename>joystick.png</filename>
             <filename>record.png</filename>
+            <filename>buttonB.png</filename>
+            <filename>buttonBack.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

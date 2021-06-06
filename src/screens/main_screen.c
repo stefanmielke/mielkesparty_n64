@@ -20,13 +20,9 @@ ScreenType main_screen_tick() {
 }
 
 void main_screen_display(display_context_t disp) {
-    /* Set the text output color */
     graphics_set_color(BLUE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2) - 20, "Mielke's Party");
 
     graphics_set_color(RED, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 45, (RES_Y / 2) + 20, "Press START");
-
-    graphics_set_color(GRAY, BLACK);
-    graphics_draw_text(disp, SCREEN_LEFT, SCREEN_BOTTOM - 20, game_save.check == 0 ? "Error loading save" : "Save loaded!");
 }
