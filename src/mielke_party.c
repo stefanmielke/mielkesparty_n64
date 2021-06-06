@@ -1,4 +1,5 @@
-#include <libdragon.h>
+
+#include "../libs/libdragon/include/libdragon.h"
 
 #include <string.h>
 

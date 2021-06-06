@@ -1,7 +1,7 @@
 #include "minigame_detail_screen.h"
 
 #include <stdio.h>
-#include <libdragon.h>
+#include "../../libs/libdragon/include/libdragon.h"
 
 #include "../definitions.h"
 #include "screen_defs.h"

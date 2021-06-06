@@ -1,62 +1,48 @@
 #include "main_menu_screen.h"
 
-#include <libdragon.h>
+#include "../../libs/libdragon/include/libdragon.h"
 
 #include "../definitions.h"
 #include "screen_defs.h"
+#include "menu_screen.h"
 #include "../utils/mem_pool.h"
 
-extern MemZone memory_pool;
-
-typedef struct main_menu_screen {
-    char current_menu_item;
-} MainMenuScreen;
-
-MainMenuScreen* screen;
-
 enum menu_items {
-    Infinite,
-    Score,
-    Multiplayer,
-    Back,
-    MaxItems
+    MM_Infinite,
+    MM_Score,
+    MM_Multiplayer,
+    MM_Back,
+    MM_MaxItems
 };
 
 void main_menu_screen_create() {
-    screen = mem_zone_alloc(&memory_pool, sizeof(MainMenuScreen));
-    screen->current_menu_item = 0;
+    menu_screen_create(MM_MaxItems);
 }
 
 ScreenType main_menu_screen_tick() {
     // checking pressing buttons before moving the cursor
     for (int i = 0; i < 4; ++i) {
-        if (keys_released.c[i].B)
+        if (keys_released.c[i].B) {
+            menu_screen_destroy();
             return SCREEN_MAIN;
+        }
 
         if (keys_released.c[i].A || keys_released.c[i].start)
-            switch (screen->current_menu_item)
+            switch (menu_screen->currentMenuItem)
             {
-            case Infinite:
+            case MM_Infinite:
+                menu_screen_destroy();
                 return SCREEN_INFINITE_MENU;
-            case Score:
-            case Multiplayer:
+            case MM_Score:
+            case MM_Multiplayer:
                 break;
-            case Back:
+            case MM_Back:
+                menu_screen_destroy();
                 return SCREEN_MAIN;
             }
     }
-    for (int i = 0; i < 4; ++i) {
-        if (keys_released.c[i].up)
-            --screen->current_menu_item;
 
-        if (keys_released.c[i].down)
-            ++screen->current_menu_item;
-    }
-
-    if (screen->current_menu_item < 0)
-        screen->current_menu_item = MaxItems - 1;
-    if (screen->current_menu_item >= MaxItems)
-        screen->current_menu_item = 0;
+    menu_screen_end_tick();
 
     return SCREEN_MAIN_MENU;
 }
@@ -66,12 +52,15 @@ void main_menu_screen_display(display_context_t disp) {
     graphics_set_color(BLUE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) - 40, "Main Menu");
 
-    graphics_set_color(screen->current_menu_item == 0 ? RED : WHITE, BLACK);
+    graphics_set_color(menu_screen->currentMenuItem == 0 ? RED : WHITE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2), "Infinite");
-    graphics_set_color(screen->current_menu_item == 1 ? RED : GRAY, BLACK);
+    graphics_set_color(menu_screen->currentMenuItem == 1 ? RED : GRAY, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 20, "Score");
-    graphics_set_color(screen->current_menu_item == 2 ? RED : GRAY, BLACK);
+    graphics_set_color(menu_screen->currentMenuItem == 2 ? RED : GRAY, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 40, "Multiplayer");
-    graphics_set_color(screen->current_menu_item == 3 ? RED : WHITE, BLACK);
+    graphics_set_color(menu_screen->currentMenuItem == 3 ? RED : WHITE, BLACK);
     graphics_draw_text(disp, (RES_X / 2) - 35, (RES_Y / 2) + 60, "Back");
+
+    graphics_set_color(WHITE, BLACK);
+    graphics_draw_text(disp, SCREEN_BORDER, SCREEN_BOTTOM, menu_screen->canPress[0] ? "Can Press" : "No press");
 }

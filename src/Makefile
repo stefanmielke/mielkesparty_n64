@@ -7,7 +7,7 @@ MKSPRITEPATH= $(ROOTDIR)/bin/mksprite
 HEADERPATH = $(ROOTDIR)/mips64-elf/lib
 N64TOOL = $(ROOTDIR)/bin/n64tool
 HEADERNAME = header
-LINK_FLAGS = -L$(ROOTDIR)/mips64-elf/lib -ldragon -lc -lm -ldragonsys -Tn64.ld
+LINK_FLAGS = -L../libs/libdragon -ldragon -ldragonsys -L$(ROOTDIR)/mips64-elf/lib -lc -lm -Tn64.ld
 CFLAGS = -std=gnu99 -march=vr4300 -mtune=vr4300 -O2 -Wall -Werror -I$(ROOTDIR)/mips64-elf/include
 ASFLAGS = -mtune=vr4300 -march=vr4300
 CC = $(GCCN64PREFIX)gcc
@@ -16,7 +16,7 @@ LD = $(GCCN64PREFIX)ld
 OBJCOPY = $(GCCN64PREFIX)objcopy
 
 OBJS = $(PROG_NAME).o screens/main_screen.o screens/main_menu_screen.o screens/infinite_menu_screen.o screens/minigame_detail_screen.o \
-		screens/minigame_play_screen.o screens/no_save_screen.o utils/mem_pool.o utils/util_defs.o minigames/minigame_flyingbats.o
+		screens/minigame_play_screen.o screens/no_save_screen.o screens/menu_screen.o utils/mem_pool.o utils/util_defs.o minigames/minigame_flyingbats.o
 
 ifeq ($(N64_BYTE_SWAP),true)
 ROM_EXTENSION = .v64

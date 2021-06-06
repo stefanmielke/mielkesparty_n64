@@ -1,6 +1,6 @@
 #include "main_screen.h"
 
-#include <libdragon.h>
+#include "../../libs/libdragon/include/libdragon.h"
 
 #include "../definitions.h"
 #include "screen_defs.h"
