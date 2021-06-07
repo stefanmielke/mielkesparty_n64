@@ -326,12 +326,12 @@ void player_tick(int player_id) {
             fb_data->players[player_id].jumped = false;
         }
 
-        if (keys_held.c[player_id].x != 0)
-            fb_data->players[player_id].rect.pos.x += keys_held.c[player_id].x * LATERAL_SPEED;
-        else if (keys_held.c[player_id].right)
+        if (keys_held.c[player_id].right)
             fb_data->players[player_id].rect.pos.x += MAX_LATERAL_SPEED;
         else if (keys_held.c[player_id].left)
             fb_data->players[player_id].rect.pos.x -= MAX_LATERAL_SPEED;
+        else if (keys_held.c[player_id].x != 0)
+            fb_data->players[player_id].rect.pos.x += keys_held.c[player_id].x * LATERAL_SPEED;
     }
 
     if (fb_data->players[player_id].rect.pos.x - BORDER_SIZE < 0)
