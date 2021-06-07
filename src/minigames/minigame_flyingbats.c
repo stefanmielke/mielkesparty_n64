@@ -194,7 +194,7 @@ bool minigame_flyingbats_tick() {
     for (size_t i = 0; i < MAX_ENEMIES; ++i)
     {
         fb_data->enemies[i].rect.pos.x -= fb_data->currentEnemySpeed;
-        if (fb_data->enemies[i].rect.pos.x < (ENEMY_SIZE * 2)) {
+        if (fb_data->enemies[i].rect.pos.x < -ENEMY_SIZE) {
             fb_data->enemies[i].rect.pos.x = RANDN(RES_X) + 20 + RES_X;
             fb_data->enemies[i].rect.pos.y = RANDR(SCREEN_BORDER, SCREEN_BOTTOM);
         }
@@ -245,7 +245,7 @@ void minigame_flyingbats_display(display_context_t disp) {
     rdp_sync(SYNC_PIPE);
     rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, (fb_data->animCounter % 2) + SPRITE_fb_obstacle_1);
     for (size_t i = 0; i < MAX_ENEMIES; ++i) {
-        if (contains(fb_data->enemies[i].rect, screen_rect)) {
+        if (is_intersecting(fb_data->enemies[i].rect, screen_rect)) {
             rdp_draw_sprite(0, fb_data->enemies[i].rect.pos.x - 9, fb_data->enemies[i].rect.pos.y - 9, MIRROR_DISABLED);
         }
     }
