@@ -27,7 +27,7 @@ fnDisplay screen_display;
 
 struct controller_data keys_held;
 struct controller_data keys_released;
-int connected_controllers;
+bool connected_controllers[4];
 
 MemZone memory_pool;
 sprite_t *ui_sprites;
@@ -50,16 +50,21 @@ int main() {
         if (next_screen != SCREEN_NONE && screen_current != next_screen)
             change_screen(next_screen);
 
+        // tick controller
         controller_scan();
         keys_held = get_keys_held();
         keys_released = get_keys_up();
-        connected_controllers = get_controllers_present();
+        int controllers_present = get_controllers_present();
+        connected_controllers[0] = controllers_present & CONTROLLER_1_INSERTED;
+        connected_controllers[1] = controllers_present & CONTROLLER_2_INSERTED;
+        connected_controllers[2] = controllers_present & CONTROLLER_3_INSERTED;
+        connected_controllers[3] = controllers_present & CONTROLLER_4_INSERTED;
 
-        next_screen = screen_tick(&keys_held, &keys_released, connected_controllers);
+        next_screen = screen_tick();
 
         audio_tick(ui_sfx);
 
-        /* Grab a render buffer */
+        // tick render
         static display_context_t disp = 0;
         while( !(disp = display_lock()) );
 

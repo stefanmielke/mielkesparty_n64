@@ -82,20 +82,16 @@ void minigame_detail_screen_display(display_context_t disp) {
         int start_x = RES_X / 2 + 67;
         int start_y = SCREEN_BOTTOM - 90;
         int offset = 38;
-        bool p1_connected = connected_controllers & CONTROLLER_1_INSERTED;
-        int p1_sprite_offset = !p1_connected ? SPRITE_player_1_disconnected : players_ready[0] ? SPRITE_player_1_ready : SPRITE_player_1_not_ready;
+        int p1_sprite_offset = !connected_controllers[0] ? SPRITE_player_1_disconnected : players_ready[0] ? SPRITE_player_1_ready : SPRITE_player_1_not_ready;
         graphics_draw_sprite_trans_stride(disp, start_x, start_y, md_sprites, p1_sprite_offset);
 
-        bool p2_connected = connected_controllers & CONTROLLER_2_INSERTED;
-        int p2_sprite_offset = !p2_connected ? SPRITE_player_2_disconnected : players_ready[1] ? SPRITE_player_2_ready : SPRITE_player_2_not_ready;
+        int p2_sprite_offset = !connected_controllers[1] ? SPRITE_player_2_disconnected : players_ready[1] ? SPRITE_player_2_ready : SPRITE_player_2_not_ready;
         graphics_draw_sprite_trans_stride(disp, start_x + offset, start_y, md_sprites, p2_sprite_offset);
 
-        bool p3_connected = connected_controllers & CONTROLLER_3_INSERTED;
-        int p3_sprite_offset = !p3_connected ? SPRITE_player_3_disconnected : players_ready[2] ? SPRITE_player_3_ready : SPRITE_player_3_not_ready;
+        int p3_sprite_offset = !connected_controllers[2] ? SPRITE_player_3_disconnected : players_ready[2] ? SPRITE_player_3_ready : SPRITE_player_3_not_ready;
         graphics_draw_sprite_trans_stride(disp, start_x, start_y + offset, md_sprites, p3_sprite_offset);
 
-        bool p4_connected = connected_controllers & CONTROLLER_4_INSERTED;
-        int p4_sprite_offset = !p4_connected ? SPRITE_player_4_disconnected : players_ready[3] ? SPRITE_player_4_ready : SPRITE_player_4_not_ready;
+        int p4_sprite_offset = !connected_controllers[3] ? SPRITE_player_4_disconnected : players_ready[3] ? SPRITE_player_4_ready : SPRITE_player_4_not_ready;
         graphics_draw_sprite_trans_stride(disp, start_x + offset, start_y + offset, md_sprites, p4_sprite_offset);
     }
 

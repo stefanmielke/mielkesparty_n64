@@ -23,14 +23,8 @@ void menu_screen_repeat_timer_cntr_4(int ovfl) {
 }
 
 void menu_screen_end_tick() {
-    for (int i = 0; i < 1; ++i) {
-        if (i == 0 && !(connected_controllers & CONTROLLER_1_INSERTED))
-            continue;
-        else if (i == 1 && !(connected_controllers & CONTROLLER_2_INSERTED))
-            continue;
-        else if (i == 2 && !(connected_controllers & CONTROLLER_3_INSERTED))
-            continue;
-        else if (i == 3 && !(connected_controllers & CONTROLLER_4_INSERTED))
+    for (int i = 0; i < 4; ++i) {
+        if (!connected_controllers[i])
             continue;
 
         if (keys_held.c[i].up || keys_held.c[i].y > DEADZONE) {

@@ -7,7 +7,7 @@
 extern MemZone memory_pool;
 extern struct controller_data keys_held;
 extern struct controller_data keys_released;
-extern int connected_controllers;
+extern bool connected_controllers[4];
 extern Rect screen_rect;
 extern SaveFile game_save;
 extern bool players_ready[4];

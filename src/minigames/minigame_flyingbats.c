@@ -283,23 +283,6 @@ void player_tick(int player_id) {
     if (!fb_data->players[player_id].alive)
         return;
 
-    bool is_controller_connected = false;
-    switch (player_id)
-    {
-    case 0:
-        is_controller_connected = connected_controllers & CONTROLLER_1_INSERTED;
-        break;
-    case 1:
-        is_controller_connected = connected_controllers & CONTROLLER_2_INSERTED;
-        break;
-    case 2:
-        is_controller_connected = connected_controllers & CONTROLLER_3_INSERTED;
-        break;
-    default:
-        is_controller_connected = connected_controllers & CONTROLLER_4_INSERTED;
-        break;
-    }
-
     fb_data->players[player_id].speed.y += GRAVITY;
     if (fb_data->players[player_id].speed.y < -MAX_SPEED_UP)
         fb_data->players[player_id].speed.y = -MAX_SPEED_UP;
@@ -317,7 +300,7 @@ void player_tick(int player_id) {
         fb_data->players[player_id].speed.y = -BUMP_SPEED;
     }
 
-    if (is_controller_connected) {
+    if (connected_controllers[player_id]) {
         if (!fb_data->players[player_id].jumped && keys_held.c[player_id].A) {
             fb_data->players[player_id].jumped = true;
             fb_data->players[player_id].speed.y = -JUMP_SPEED;
