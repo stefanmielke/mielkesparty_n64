@@ -68,13 +68,14 @@ int main() {
         static display_context_t disp = 0;
         while( !(disp = display_lock()) );
 
-        graphics_fill_screen(disp, BLACK);
-
-        screen_display(disp);
-
         if (next_screen != SCREEN_NONE && screen_current != next_screen) {
-            graphics_set_color(WHITE, BLACK);
-            graphics_draw_text(disp, SCREEN_BORDER, RES_Y - SCREEN_BORDER - 20, "Loading next screen...");
+            graphics_fill_screen(disp, BLACK);
+            graphics_set_color(WHITE, TRANSP);
+            graphics_draw_text(disp, SCREEN_BORDER, RES_Y - SCREEN_BORDER - 20, "Loading...");
+        }
+        else {
+            graphics_fill_screen(disp, BLACK);
+            screen_display(disp);
         }
 
         display_show(disp);
