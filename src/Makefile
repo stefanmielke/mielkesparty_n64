@@ -29,7 +29,7 @@ OBJS = $(PROG_NAME).o screens/main_screen.o screens/main_menu_screen.o screens/i
 
 # audio
 SOX = sox
-SOXFLAGS = -b 16 -e signed-integer -B -r 44100
+SOXFLAGS = -b 16 -e signed-integer -B -r 32000
 OGG_DIR = raw/sfx
 OGG_FILES := $(wildcard $(OGG_DIR)/*.ogg)
 PCM_DIR = raw/sfx
@@ -62,7 +62,8 @@ $(PROG_NAME)$(ROM_EXTENSION): $(PROG_NAME).elf packed_files.dfs
 #$(MKSPRITEPATH) [bits] [columns] [rows] [source.png] [destination.sprite]
 packed_files.dfs: $(PCM_FILES)
 	mkdir -p res
-	mv $(OGG_DIR)/*.raw ./res/
+	mkdir -p res/sfx
+	mv $(OGG_DIR)/*.raw ./res/sfx/
 	$(MKSPRITEPATH) 16 7 1 ./raw/flying_bat.png ./res/flying_bat.sprite
 	$(MKSPRITEPATH) 16 9 1 ./raw/interface.png ./res/interface.sprite
 	$(MKSPRITEPATH) 16 12 1 ./raw/minigame_detail.png ./res/minigame_detail.sprite

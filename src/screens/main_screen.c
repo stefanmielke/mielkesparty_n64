@@ -7,13 +7,13 @@
 #include "../utils/mem_pool.h"
 
 void main_screen_create() {
-    
+    audio_load_and_play_bgm(audio_player, BGM_INTRO);
 }
 
 ScreenType main_screen_tick() {
     for (int i = 0; i < 4; ++i) {
         if (keys_released.c[i].start) {
-            audio_play_sfx(ui_sfx, SFX_CONFIRM);
+            PLAY_AUDIO(SFX_CONFIRM);
             return SCREEN_MAIN_MENU;
         }
     }

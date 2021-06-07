@@ -24,6 +24,8 @@ void minigame_detail_screen_create() {
         players_ready[i] = false;
     }
     alloc_and_load_spritesheet_minigame_detail(md_sprites);
+
+    audio_load_and_play_bgm(audio_player, BGM_INTRO);
 }
 
 ScreenType minigame_detail_screen_tick() {

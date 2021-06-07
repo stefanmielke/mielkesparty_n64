@@ -162,6 +162,8 @@ void minigame_flyingbats_create() {
     fb_data->postStartTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_start);
 
     alloc_and_load_spritesheet_flying_bat(fb_data->sprites);
+
+    audio_load_and_play_bgm(audio_player, BGM_FLYING_BATS);
 }
 
 void minigame_flyingbats_destroy() {

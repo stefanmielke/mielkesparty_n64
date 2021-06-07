@@ -31,7 +31,7 @@ bool connected_controllers[4];
 
 MemZone memory_pool;
 sprite_t *ui_sprites;
-audio_t *ui_sfx;
+audio_t *audio_player;
 
 MiniGame selected_minigame = MINIGAME_NONE;
 bool players_ready[4];
@@ -62,7 +62,7 @@ int main() {
 
         next_screen = screen_tick();
 
-        audio_tick(ui_sfx);
+        audio_tick(audio_player);
 
         // tick render
         static display_context_t disp = 0;
@@ -94,10 +94,10 @@ void setup() {
     timer_init();
     audio_init(AUDIO_FREQUENCY, AUDIO_BUFFERS);
 
-    mem_zone_init(&memory_pool, 1 * 1024);
+    mem_zone_init(&memory_pool, 0.6 * 1024);
 
     alloc_and_load_spritesheet_interface(ui_sprites);
-    ui_sfx = audio_setup(AUDIO_FREQUENCY);
+    audio_player = audio_setup(AUDIO_FREQUENCY);
 
     TRANSP = graphics_make_color(0, 0, 0, 0);
     WHITE = graphics_make_color(255, 255, 255, 255);

@@ -16,6 +16,8 @@ enum menu_items {
 
 void infinite_menu_screen_create() {
     menu_screen_create(IM_MaxItems);
+
+    audio_load_and_play_bgm(audio_player, BGM_INTRO);
 }
 
 ScreenType infinite_menu_screen_tick() {

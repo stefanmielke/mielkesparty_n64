@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../utils/audio.h"
 #include "../utils/mem_pool.h"
 #include "../screens/minigame_detail_screen.h"
 
@@ -11,6 +12,7 @@ extern bool connected_controllers[4];
 extern Rect screen_rect;
 extern SaveFile game_save;
 extern bool players_ready[4];
+extern audio_t *audio_player;
 
 extern void save_write(SaveFile save);
 extern SaveFile save_read();
