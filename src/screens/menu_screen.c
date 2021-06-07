@@ -58,10 +58,10 @@ void menu_screen_create(size_t max_item) {
     menu_screen->currentMenuItem = 0;
     menu_screen->maxItem = max_item;
     
-    menu_screen->repeatTimer[0] = new_timer_stopped(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT, menu_screen_repeat_timer_cntr_1);
-    menu_screen->repeatTimer[1] = new_timer_stopped(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT, menu_screen_repeat_timer_cntr_2);
-    menu_screen->repeatTimer[2] = new_timer_stopped(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT, menu_screen_repeat_timer_cntr_3);
-    menu_screen->repeatTimer[3] = new_timer_stopped(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT, menu_screen_repeat_timer_cntr_4);
+    menu_screen->repeatTimer[0] = new_timer(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT & TF_DISABLED, menu_screen_repeat_timer_cntr_1);
+    menu_screen->repeatTimer[1] = new_timer(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT & TF_DISABLED, menu_screen_repeat_timer_cntr_2);
+    menu_screen->repeatTimer[2] = new_timer(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT & TF_DISABLED, menu_screen_repeat_timer_cntr_3);
+    menu_screen->repeatTimer[3] = new_timer(TIMER_TICKS(SECOND / 5), TF_ONE_SHOT & TF_DISABLED, menu_screen_repeat_timer_cntr_4);
 
     for (size_t i = 0; i < 4; ++i) {
         menu_screen->canPress[i] = true;
