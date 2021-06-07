@@ -138,14 +138,13 @@ void minigame_flyingbats_create() {
     snprintf(fb_record_string, 8, "%02d:%02d", record_minutes, record_seconds);
 
     for (size_t i = 0; i < 4; ++i) {
-        if (players_ready[i]) {
-            fb_data->players[i].isPlaying = true;
-            fb_data->players[i].rect.pos.x = 20;
-            fb_data->players[i].rect.pos.y = i * 20;
-            fb_data->players[i].rect.size.width = 11;
-            fb_data->players[i].rect.size.height = 11;
-            fb_data->players[i].alive = true;
-        }
+        fb_data->players[i].rect.pos.x = 20;
+        fb_data->players[i].rect.pos.y = i * 20;
+        fb_data->players[i].rect.size.width = 11;
+        fb_data->players[i].rect.size.height = 11;
+
+        fb_data->players[i].isPlaying = players_ready[i];
+        fb_data->players[i].alive = players_ready[i];
     }
 
     for (size_t i = 0; i < MAX_ENEMIES; ++i) {
