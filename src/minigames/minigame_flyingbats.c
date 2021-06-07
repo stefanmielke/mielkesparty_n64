@@ -75,6 +75,11 @@ void post_start(int ovfl) {
     fb_data->state = FB_PLAYING;
 }
 
+void post_death(int ovfl) {
+    fb_data->state = FB_DEAD;
+    fb_data->wantsToSave = true;
+}
+
 void die(int player_id) {
     fb_data->players[player_id].alive = false;
 
@@ -97,12 +102,8 @@ void die(int player_id) {
         }
 
         fb_data->state = FB_DYING;
+        fb_data->postDeathTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_death);
     }
-}
-
-void post_death(int ovfl) {
-    fb_data->state = FB_DEAD;
-    fb_data->wantsToSave = true;
 }
 
 void set_time() {
@@ -207,7 +208,6 @@ bool minigame_flyingbats_tick() {
         for (size_t i = 0; i < MAX_ENEMIES; ++i) {
             if (is_intersecting(fb_data->enemies[i].rect, fb_data->players[player_id].rect)) {
                 die(player_id);
-                fb_data->postDeathTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_death);
                 break;
             }
         }
