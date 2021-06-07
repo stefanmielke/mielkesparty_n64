@@ -33,14 +33,19 @@ ScreenType minigame_detail_screen_tick() {
                 free(md_sprites);
                 return SCREEN_MINIGAME_PLAY;
             }
-            if (keys_released.c[i].B)
+            if (keys_released.c[i].B) {
+                PLAY_AUDIO(SFX_UNCONFIRM);
                 players_ready[i] = false;
+            }
         }
         else {
-            if (keys_released.c[i].A)
+            if (keys_released.c[i].A) {
+                PLAY_AUDIO(SFX_CONFIRM);
                 players_ready[i] = true;
+            }
             if (keys_released.c[i].B) {
                 free(md_sprites);
+                PLAY_AUDIO(SFX_BACK);
                 return SCREEN_INFINITE_MENU;
             }
         }

@@ -12,8 +12,10 @@ void main_screen_create() {
 
 ScreenType main_screen_tick() {
     for (int i = 0; i < 4; ++i) {
-        if (keys_released.c[i].start)
+        if (keys_released.c[i].start) {
+            audio_play_sfx(ui_sfx, SFX_CONFIRM);
             return SCREEN_MAIN_MENU;
+        }
     }
 
     return SCREEN_MAIN;

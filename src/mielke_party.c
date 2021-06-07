@@ -7,6 +7,7 @@
 #include "minigames.h"
 #include "utils/mem_pool.h"
 #include "utils/util_defs.h"
+#include "utils/audio.h"
 #include "screens/screen_config.h"
 #include "screens/no_save_screen.h"
 #include "screens/main_screen.h"
@@ -30,6 +31,7 @@ int connected_controllers;
 
 MemZone memory_pool;
 sprite_t *ui_sprites;
+audio_t *ui_sfx;
 
 MiniGame selected_minigame = MINIGAME_NONE;
 bool players_ready[4];
@@ -54,6 +56,8 @@ int main() {
         connected_controllers = get_controllers_present();
 
         next_screen = screen_tick(&keys_held, &keys_released, connected_controllers);
+
+        audio_tick(ui_sfx);
 
         /* Grab a render buffer */
         static display_context_t disp = 0;
@@ -82,10 +86,12 @@ void setup() {
     rdp_init();
     controller_init();
     timer_init();
+    audio_init(AUDIO_FREQUENCY, AUDIO_BUFFERS);
 
     mem_zone_init(&memory_pool, 1 * 1024);
 
     alloc_and_load_spritesheet_interface(ui_sprites);
+    ui_sfx = audio_setup(AUDIO_FREQUENCY);
 
     TRANSP = graphics_make_color(0, 0, 0, 0);
     WHITE = graphics_make_color(255, 255, 255, 255);

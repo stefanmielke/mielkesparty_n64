@@ -26,3 +26,9 @@ typedef struct save_file {
     uint8_t check; // 0 if can't save, 1 if it can and is loaded
     int times[MINIGAME_MAX-1]; // time for each minigame (disregarding MINIGAME_NONE, so use -1 when using it)
 } SaveFile;
+
+typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned int u32;
+typedef signed short s16;
+typedef signed int s32;

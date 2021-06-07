@@ -7,5 +7,6 @@
 *.bin
 *.sprite
 *.dfs
+*.raw
 
 *.plan_bak*

@@ -23,17 +23,21 @@ ScreenType infinite_menu_screen_tick() {
     for (int i = 0; i < 4; ++i) {
         if (keys_released.c[i].B) {
             menu_screen_destroy();
+            PLAY_AUDIO(SFX_BACK);
             return SCREEN_MAIN_MENU;
         }
 
-        if (keys_released.c[i].A || keys_released.c[i].start)
+        if (keys_released.c[i].A || keys_released.c[i].start) {
             switch (menu_screen->currentMenuItem)
             {
             case IM_FlyingBats:
-                menu_screen_destroy();
                 selected_minigame = MINIGAME_FLYINGBATS;
-                return SCREEN_MINIGAME_DETAIL;
+                break;
             }
+            PLAY_AUDIO(SFX_CLICK);
+            menu_screen_destroy();
+            return SCREEN_MINIGAME_DETAIL;
+        }
     }
 
     menu_screen_end_tick();

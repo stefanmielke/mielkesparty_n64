@@ -24,6 +24,7 @@ ScreenType main_menu_screen_tick() {
     for (int i = 0; i < 4; ++i) {
         if (keys_released.c[i].B) {
             menu_screen_destroy();
+            PLAY_AUDIO(SFX_BACK);
             return SCREEN_MAIN;
         }
 
@@ -31,6 +32,7 @@ ScreenType main_menu_screen_tick() {
             switch (menu_screen->currentMenuItem)
             {
             case MM_Infinite:
+                PLAY_AUDIO(SFX_CLICK);
                 menu_screen_destroy();
                 return SCREEN_INFINITE_MENU;
             case MM_Score:
