@@ -8,8 +8,7 @@
 
 #include "audio.h"
 
-audio_t *audio_setup(const u16 sample_rate)
-{
+audio_t *audio_setup(const u16 sample_rate) {
     const u16 buffer_length = audio_get_buffer_length();
     s16 *buffer = malloc(buffer_length * STEREO_PCM_SAMPLE_SIZE);
     audio_t *audio = malloc(sizeof(audio_t));
@@ -87,13 +86,11 @@ void audio_free(audio_t *audio) {
     free(audio);
 }
 
-inline static s16 mix_pcm_samples(s32 mix, u8 num)
-{
+inline static s16 mix_pcm_samples(s32 mix, u8 num) {
     return (num > 1) ? mix / num : mix;
 }
 
-void audio_tick(audio_t *audio)
-{
+void audio_tick(audio_t *audio) {
     if (audio && audio_can_write())
     {
         sfx_channel_t channel;
@@ -138,8 +135,7 @@ void audio_tick(audio_t *audio)
     }
 }
 
-void audio_play_sfx(audio_t *audio, const sfx_sounds_t sfx_sound)
-{
+void audio_play_sfx(audio_t *audio, const sfx_sounds_t sfx_sound) {
     if (audio) {
         pcm_sound_t *sfx = audio->sfx_cache[sfx_sound];
         if (sfx) {
@@ -154,8 +150,7 @@ void audio_play_sfx(audio_t *audio, const sfx_sounds_t sfx_sound)
     }
 }
 
-pcm_sound_t *read_dfs_pcm_sound(const char *file, u16 sample_rate, u8 channels, bool loop)
-{
+pcm_sound_t *read_dfs_pcm_sound(const char *file, u16 sample_rate, u8 channels, bool loop) {
     int fp = dfs_open(file);
     const u32 size = dfs_size(fp);
     s16 *data = malloc(size);

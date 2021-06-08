@@ -43,6 +43,8 @@ SaveFile game_save;
 void save_write(SaveFile save);
 SaveFile save_read();
 
+char *memory_used_text;
+
 int main() {
     setup();
 
@@ -78,11 +80,22 @@ int main() {
             screen_display(disp);
         }
 
+        // debug info
+        if (keys_held.c[0].C_right) {
+            struct mallinfo mem_info = mallinfo();
+            snprintf(memory_used_text, 21, "%dKB/%dKB", mem_info.uordblks / 1024, get_memory_size() / 1024);
+
+            graphics_set_color(mem_info.uordblks > 4 * 1024 * 1024 ? RED : mem_info.uordblks > (get_memory_size() / 4) * 3 ? RED : GREEN, TRANSP);
+            graphics_draw_text(disp, SCREEN_BORDER, RES_Y - SCREEN_BORDER - 30, memory_used_text);
+        }
+
         display_show(disp);
     }
 }
 
 void setup() {
+    memory_used_text = malloc(sizeof(char)*21);
+
     /* enable interrupts (on the CPU) */
     init_interrupts();
 
