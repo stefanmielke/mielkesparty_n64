@@ -10,12 +10,14 @@
 #include "../gfx_h/gfx_interface.h"
 #include "../gfx_h/gfx_minigame_detail.h"
 
-sprite_t* md_sprites;
+sprite_t *md_sprites;
+sprite_t *md_thumb;
 char* det_sc_time_string;
 const char* get_minigame_name(int* offset_x);
 const char* get_minigame_record();
 const char* get_minigame_description();
 const char* get_minigame_controls();
+void open_minigame_thumb();
 void draw_minigame_controls(display_context_t disp, int start_x, int start_y);
 
 void minigame_detail_screen_create() {
@@ -24,6 +26,7 @@ void minigame_detail_screen_create() {
         players_ready[i] = false;
     }
     alloc_and_load_spritesheet_minigame_detail(md_sprites);
+    open_minigame_thumb();
 
     audio_load_and_play_bgm(audio_player, BGM_INTRO);
 }
@@ -33,6 +36,7 @@ ScreenType minigame_detail_screen_tick() {
         if (players_ready[i]) {
             if (keys_released.c[i].start) {
                 free(md_sprites);
+                free(md_thumb);
                 return SCREEN_MINIGAME_PLAY;
             }
             if (keys_released.c[i].B) {
@@ -46,6 +50,7 @@ ScreenType minigame_detail_screen_tick() {
                 players_ready[i] = true;
             }
             if (keys_released.c[i].B) {
+                free(md_thumb);
                 free(md_sprites);
                 PLAY_AUDIO(SFX_BACK);
                 return SCREEN_INFINITE_MENU;
@@ -63,19 +68,18 @@ void minigame_detail_screen_display(display_context_t disp) {
         const char* name = get_minigame_name(&offset_x);
         graphics_draw_text(disp, SCREEN_LEFT + offset_x, SCREEN_TOP + 5, name);
     }
+    { // thumb
+        graphics_draw_sprite(disp, 5, SCREEN_TOP + 15, md_thumb);
+    }
     { // record
         graphics_set_color(GREEN, TRANSP);
         graphics_draw_sprite_trans_stride(disp, RES_X / 2 - 14, SCREEN_TOP + 15, ui_sprites, SPRITE_record);
         graphics_draw_text(disp, RES_X / 2 + 4, SCREEN_TOP + 20, get_minigame_record());
     }
-    // todo: draw minigame image/video
     { // description
         graphics_set_color(WHITE, TRANSP);
-        graphics_draw_text(disp, SCREEN_LEFT, RES_Y / 2 + 20, get_minigame_description());
+        graphics_draw_text(disp, SCREEN_LEFT, RES_Y / 2 + 60, get_minigame_description());
     }
-
-    // separator
-    graphics_draw_line(disp, RES_X / 2 + 46, SCREEN_TOP, RES_X / 2 + 46, SCREEN_BOTTOM, GRAY);
 
     // controls
     draw_minigame_controls(disp, RES_X / 2 + 52, SCREEN_TOP + 30);
@@ -170,4 +174,21 @@ void draw_minigame_controls(display_context_t disp, int start_x, int start_y) {
             graphics_draw_text(disp, start_x, start_y, "No controls");
         } break;
     }
+}
+
+void open_minigame_thumb() {
+    const char *sprite_name;
+    switch (selected_minigame)
+    {
+    case MINIGAME_FLYINGBATS:
+        sprite_name = "/flying_bats_large.sprite";
+        break;
+    default:
+        return;
+    }
+
+    int fp = dfs_open(sprite_name);
+    md_thumb = (sprite_t*)malloc(dfs_size(fp));
+    dfs_read(md_thumb, 1, dfs_size(fp), fp);
+    dfs_close(fp);
 }
