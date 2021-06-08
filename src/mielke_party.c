@@ -86,7 +86,7 @@ int main() {
             snprintf(memory_used_text, 21, "%dKB/%dKB", mem_info.uordblks / 1024, get_memory_size() / 1024);
 
             graphics_set_color(mem_info.uordblks > 4 * 1024 * 1024 ? RED : mem_info.uordblks > (get_memory_size() / 4) * 3 ? RED : GREEN, TRANSP);
-            graphics_draw_text(disp, SCREEN_BORDER, RES_Y - SCREEN_BORDER - 30, memory_used_text);
+            graphics_draw_text(disp, SCREEN_BORDER + 20, SCREEN_BOTTOM - 12, memory_used_text);
         }
 
         display_show(disp);
