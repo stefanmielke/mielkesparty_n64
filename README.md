@@ -116,7 +116,23 @@ eg.: `void minigame_flyingbats_destroy();`
 
 Is called once `fnGameTick` returns `false` or an external action causes the game to be finished early (eg.: player exits the game).
 
-### FAQ
+### Utils
+
+There are some utils that were created to aid the development. Some of those were copied from other projects and have their copyright on the beginning of the file.
+
+**audio.c\h**
+
+Has audio loading and playback.
+
+**mem_pool.c\h**
+
+Has the memory pool implementation used to allocate dynamic memory.
+
+**util_defs.c\h**
+
+Has `Position`, `Rect`, and `Size` structs along with some functions to ease their use.
+
+## FAQ
 
 > How do I load a sprite?
 
@@ -188,19 +204,3 @@ audio_load_and_play_bgm(audio_player, BGM_YOUR_BGM);
 > How do I play sounds?
 
 For any sounds, you should use the macro `PLAY_AUDIO(audio)` defined on `audio.h` passing the correct audio enum to play.
-
-### Utils
-
-There are some utils that were created to aid the development. Some of those were copied from other projects and have their copyright on the beginning of the file.
-
-**audio.c\h**
-
-Has audio loading and playback.
-
-**mem_pool.c\h**
-
-Has the memory pool implementation used to allocate dynamic memory.
-
-**util_defs.c\h**
-
-Has `Position`, `Rect`, and `Size` structs along with some functions to ease their use.
