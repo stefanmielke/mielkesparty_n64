@@ -2,9 +2,7 @@
 
 #include <libdragon.h>
 
-#include "../definitions.h"
 #include "screen_defs.h"
-#include "../utils/mem_pool.h"
 
 void main_screen_create() {
     audio_load_and_play_bgm(audio_player, BGM_INTRO);

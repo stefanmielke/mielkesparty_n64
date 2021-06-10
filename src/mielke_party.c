@@ -1,14 +1,10 @@
+#include "mielke_party.h"
 
 #include <libdragon.h>
 
 #include <string.h>
 
 #include "definitions.h"
-#include "minigames.h"
-#include "utils/mem_pool.h"
-#include "utils/util_defs.h"
-#include "utils/audio.h"
-#include "screens/screen_config.h"
 #include "screens/no_save_screen.h"
 #include "screens/main_screen.h"
 #include "screens/main_menu_screen.h"
@@ -17,31 +13,8 @@
 #include "screens/minigame_play_screen.h"
 #include "gfx_h/gfx_interface.h"
 
-ScreenType screen_current = SCREEN_NONE;
-ScreenType next_screen = SCREEN_MAIN;
-Rect screen_rect;
-
-fnCreate screen_create;
-fnTick screen_tick;
-fnDisplay screen_display;
-
-struct controller_data keys_held;
-struct controller_data keys_released;
-bool connected_controllers[4];
-
-MemZone memory_pool;
-sprite_t *ui_sprites;
-audio_t *audio_player;
-
-MiniGame selected_minigame = MINIGAME_NONE;
-bool players_ready[4];
-
 void change_screen(ScreenType next_screen);
 void setup();
-
-SaveFile game_save;
-void save_write(SaveFile save);
-SaveFile save_read();
 
 int main() {
     setup();
@@ -93,6 +66,10 @@ int main() {
 }
 
 void setup() {
+    screen_current = SCREEN_NONE;
+    next_screen = SCREEN_MAIN;
+    selected_minigame = MINIGAME_NONE;
+
     /* enable interrupts (on the CPU) */
     init_interrupts();
 
