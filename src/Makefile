@@ -23,9 +23,16 @@ N64_FLAGS = -l 2M -h $(HEADERPATH)/$(HEADERNAME) -o $(PROG_NAME)$(ROM_EXTENSION)
 endif
 DFS_DIR = res
 
-OBJS = $(PROG_NAME).o screens/main_screen.o screens/main_menu_screen.o screens/infinite_menu_screen.o screens/minigame_detail_screen.o \
-		screens/minigame_play_screen.o screens/no_save_screen.o screens/menu_screen.o utils/mem_pool.o utils/util_defs.o minigames/minigame_flyingbats.o \
-		utils/audio.o
+C_ROOT_FILES := $(wildcard *.c)
+C_SCREEN_FILES := $(wildcard screens/*.c)
+C_MINIGAMES_FILES := $(wildcard minigames/*.c)
+C_UTILS_FILES := $(wildcard utils/*.c)
+
+O_ROOT_FILES := $(C_ROOT_FILES:.c=.o)
+O_SCREEN_FILES := $(C_SCREEN_FILES:.c=.o)
+O_MINIGAMES_FILES := $(C_MINIGAMES_FILES:.c=.o)
+O_UTILS_FILES := $(C_UTILS_FILES:.c=.o)
+OBJS = $(O_ROOT_FILES) $(O_SCREEN_FILES) $(O_MINIGAMES_FILES) $(O_UTILS_FILES)
 
 # audio
 SOX = sox
