@@ -1,0 +1,1 @@
+docker build -t libdragon-build-local .
