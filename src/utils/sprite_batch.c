@@ -3,12 +3,13 @@
 #include "../mielke_party.h"
 #include <libdragon.h>
 
-SpriteBatch *sprite_batch_init(sprite_t *sprite, size_t qty, Size size) {
+SpriteBatch *sprite_batch_init(sprite_t *sprite, size_t qty, Size size, Position render_offset) {
 	SpriteBatch *batch = mem_zone_alloc(&memory_pool, sizeof(SpriteBatch));
 	batch->positions = mem_zone_alloc(&memory_pool, sizeof(Position) * qty);
 	batch->sprite = sprite;
 	batch->qty = qty;
 	batch->size = size;
+	batch->render_offset = render_offset;
 
 	return batch;
 }
@@ -22,7 +23,8 @@ void sprite_batch_draw(SpriteBatch *sprite_batch, int offset) {
 	for (size_t i = 0; i < sprite_batch->qty; ++i) {
 		rect.pos = sprite_batch->positions[i];
 		if (is_intersecting(rect, screen_rect)) {
-			rdp_draw_sprite(0, rect.pos.x, rect.pos.y, MIRROR_DISABLED);
+			rdp_draw_sprite(0, rect.pos.x - sprite_batch->render_offset.x,
+							rect.pos.y - sprite_batch->render_offset.y, MIRROR_DISABLED);
 		}
 	}
 }
