@@ -5,8 +5,8 @@
 *.elf
 *.o
 *.bin
-*.sprite
 *.dfs
-*.raw
+
+/src/res/
 
 *.plan_bak*
