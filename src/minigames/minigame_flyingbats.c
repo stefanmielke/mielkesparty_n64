@@ -3,12 +3,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../definitions.h"
-#include "../utils/mem_pool.h"
-#include "../utils/util_defs.h"
 #include "minigame_defs.h"
+#include "../definitions.h"
 #include "../gfx_h/gfx_flying_bats.h"
+#include "../utils/animated_sprite.h"
+#include "../utils/mem_pool.h"
 #include "../utils/sprite_batch.h"
+#include "../utils/util_defs.h"
 
 #define GRAVITY 1
 #define MAX_SPEED_UP 20
@@ -30,6 +31,7 @@ typedef struct {
 	bool jumped;
 	bool alive;
 	bool isPlaying;
+	AnimatedSprite *anim;
 } FB_PlayerData;
 
 typedef enum fb_state { FB_START, FB_PLAYING, FB_DYING, FB_DEAD } FB_State;
@@ -130,6 +132,8 @@ void minigame_flyingbats_create() {
 	char record_seconds = fb_data->secondsRecord % 60;
 	snprintf(fb_record_string, 8, "%02d:%02d", record_minutes, record_seconds);
 
+	alloc_and_load_spritesheet_flying_bat(fb_data->sprites);
+
 	for (size_t i = 0; i < 4; ++i) {
 		fb_data->players[i].rect.pos.x = 20;
 		fb_data->players[i].rect.pos.y = i * 20;
@@ -138,9 +142,13 @@ void minigame_flyingbats_create() {
 
 		fb_data->players[i].isPlaying = players_ready[i];
 		fb_data->players[i].alive = players_ready[i];
-	}
 
-	alloc_and_load_spritesheet_flying_bat(fb_data->sprites);
+		if (fb_data->players[i].isPlaying) {
+			fb_data->players[i].anim = animated_sprite_init(fb_data->sprites, new_size_same(11),
+															new_position(11, 13), SPRITE_fb_bat_1,
+															SPRITE_fb_bat_4, 100);
+		}
+	}
 
 	fb_data->enemies = sprite_batch_init(fb_data->sprites, MAX_ENEMIES, new_size_same(ENEMY_SIZE),
 										 new_position_same(9));
@@ -242,16 +250,19 @@ void minigame_flyingbats_display(display_context_t disp) {
 		if (!fb_data->players[player_id].alive)
 			continue;
 
-		if (is_intersecting(fb_data->players[player_id].rect, screen_rect)) {
-			size_t animCounter = fb_data->players[player_id].speed.y >= 0
-									 ? fb_data->animCounter
-									 : fb_data->animCounter * 2;
-			rdp_sync(SYNC_PIPE);
-			rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites,
-									animCounter % (SPRITE_fb_bat_4 - SPRITE_fb_bat_1 + 1));
-			rdp_draw_sprite(0, fb_data->players[player_id].rect.pos.x - 11,
-							fb_data->players[player_id].rect.pos.y - 13, MIRROR_DISABLED);
-		}
+		animated_sprite_draw(fb_data->players[player_id].anim,
+							 fb_data->players[player_id].rect.pos);
+
+		// if (is_intersecting(fb_data->players[player_id].rect, screen_rect)) {
+		// 	size_t animCounter = fb_data->players[player_id].speed.y >= 0
+		// 							 ? fb_data->animCounter
+		// 							 : fb_data->animCounter * 2;
+		// 	rdp_sync(SYNC_PIPE);
+		// 	rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites,
+		// 							animCounter % (SPRITE_fb_bat_4 - SPRITE_fb_bat_1 + 1));
+		// 	rdp_draw_sprite(0, fb_data->players[player_id].rect.pos.x - 11,
+		// 					fb_data->players[player_id].rect.pos.y - 13, MIRROR_DISABLED);
+		// }
 	}
 
 	rdp_detach_display();
@@ -318,4 +329,7 @@ void player_tick(int player_id) {
 		fb_data->players[player_id].rect.pos.x = RES_X -
 												 fb_data->players[player_id].rect.size.width -
 												 BORDER_SIZE;
+
+	animated_sprite_tick(fb_data->players[player_id].anim,
+						 fb_data->players[player_id].speed.y < 0 ? 5 : 1);
 }
