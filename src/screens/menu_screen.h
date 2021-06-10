@@ -4,7 +4,7 @@
 
 #include <libdragon.h>
 
-typedef struct menu_screen {
+typedef struct {
     char currentMenuItem;
     char maxItem;
     timer_link_t* repeatTimer[4];

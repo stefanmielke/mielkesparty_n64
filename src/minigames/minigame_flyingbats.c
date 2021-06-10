@@ -23,7 +23,7 @@
 #define ENEMY_SPEED_INIT 1.5f
 #define ENEMY_SPEED_INC .1f
 
-typedef struct fb_player_data {
+typedef struct {
     Rect rect;
     Position speed;
     bool jumped;
@@ -31,7 +31,7 @@ typedef struct fb_player_data {
     bool isPlaying;
 } FB_PlayerData;
 
-typedef struct fb_enemy_data {
+typedef struct {
     Rect rect;
 } FB_EnemyData;
 
@@ -42,7 +42,7 @@ typedef enum fb_state {
     FB_DEAD
 } FB_State;
 
-typedef struct fb_minigame_data {
+typedef struct {
     FB_State state;
     bool wantsToSave;
     bool saving;

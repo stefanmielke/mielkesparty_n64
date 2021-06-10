@@ -10,7 +10,7 @@
 #include "../utils/mem_pool.h"
 #include "../minigames/minigame_flyingbats.h"
 
-typedef struct minigame_screen {
+typedef struct {
     fnGameCreate create;
     fnGameTick tick;
     fnGameDisplay display;

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 // A contiguous zone where memory can be allocated.
-typedef struct mem_zone {
+typedef struct {
     char* pos;    // Pointer to current free space position.
     char* start;  // Pointer to start of zone.
     char* end;    // Pointer to end of zone.

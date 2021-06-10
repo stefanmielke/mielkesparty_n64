@@ -22,7 +22,7 @@ uint32_t TRANSP, WHITE, BLACK, RED, GREEN, BLUE, GRAY, DARK_GRAY;
 
 #define SECOND 1000000
 
-typedef struct save_file {
+typedef struct {
     uint8_t check; // 0 if can't save, 1 if it can and is loaded
     int times[MINIGAME_MAX-1]; // time for each minigame (disregarding MINIGAME_NONE, so use -1 when using it)
 } SaveFile;

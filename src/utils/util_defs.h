@@ -2,17 +2,17 @@
 
 #include <stdbool.h>
 
-typedef struct position {
+typedef struct {
     float x;
     float y;
 } Position;
 
-typedef struct size {
+typedef struct {
     float width;
     float height;
 } Size;
 
-typedef struct rect {
+typedef struct {
     Position pos;
     Size size;
 } Rect;
