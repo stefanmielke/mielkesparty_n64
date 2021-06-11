@@ -10,7 +10,6 @@ typedef struct {
 } SaveFileBody;
 
 typedef struct {
-	// 0 if can't save, 1 if it can and is loaded
 	uint8_t check;
 	SaveFileBody body;
 } SaveFile;
