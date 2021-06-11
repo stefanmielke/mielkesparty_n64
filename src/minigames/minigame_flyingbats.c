@@ -22,7 +22,7 @@
 
 #define MAX_ENEMIES 20
 #define ENEMY_SIZE 14
-#define ENEMY_SPEED_INIT 1.5f
+#define ENEMY_SPEED_INIT 1.f
 #define ENEMY_SPEED_INC .1f
 
 typedef struct {
