@@ -2,6 +2,7 @@
 
 #include "minigames.h"
 #include "utils/audio.h"
+#include "utils/save.h"
 #include "../libs/libdragon-extensions/include/mem_pool.h"
 #include "../libs/libdragon-extensions/include/util_defs.h"
 #include "screens/screen_config.h"
@@ -26,5 +27,3 @@ MiniGame selected_minigame;
 bool players_ready[4];
 
 SaveFile game_save;
-void save_write(SaveFile save);
-SaveFile save_read();

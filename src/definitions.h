@@ -18,14 +18,9 @@
 uint32_t TRANSP, WHITE, BLACK, RED, GREEN, BLUE, GRAY, DARK_GRAY;
 
 #define RANDN(max) (rand() % (max))
-#define RANDR(min, max) ((rand() % ( (max) - (min) + 1 )) + (min))
+#define RANDR(min, max) ((rand() % ((max) - (min) + 1)) + (min))
 
 #define SECOND 1000000
-
-typedef struct {
-    uint8_t check; // 0 if can't save, 1 if it can and is loaded
-    int times[MINIGAME_MAX-1]; // time for each minigame (disregarding MINIGAME_NONE, so use -1 when using it)
-} SaveFile;
 
 typedef unsigned char u8;
 typedef unsigned short u16;
