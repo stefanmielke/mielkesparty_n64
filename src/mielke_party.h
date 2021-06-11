@@ -2,8 +2,8 @@
 
 #include "minigames.h"
 #include "utils/audio.h"
-#include "utils/mem_pool.h"
-#include "utils/util_defs.h"
+#include "../libs/libdragon-extensions/include/mem_pool.h"
+#include "../libs/libdragon-extensions/include/util_defs.h"
 #include "screens/screen_config.h"
 
 ScreenType screen_current;

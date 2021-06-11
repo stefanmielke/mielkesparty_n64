@@ -39,6 +39,7 @@ audio_t *audio_setup(const u16 sample_rate) {
 }
 
 void audio_load_and_play_bgm(audio_t *audio, bgm_sounds bgm_sound) {
+    return;
     if (bgm_sound == audio->current_bgm || bgm_sound == BGM_NONE)
         return;
 

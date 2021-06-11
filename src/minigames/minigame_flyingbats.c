@@ -6,10 +6,10 @@
 #include "minigame_defs.h"
 #include "../definitions.h"
 #include "../gfx_h/gfx_flying_bats.h"
-#include "../utils/animated_sprite.h"
-#include "../utils/mem_pool.h"
-#include "../utils/sprite_batch.h"
-#include "../utils/util_defs.h"
+#include "../../libs/libdragon-extensions/include/animated_sprite.h"
+#include "../../libs/libdragon-extensions/include/mem_pool.h"
+#include "../../libs/libdragon-extensions/include/sprite_batch.h"
+#include "../../libs/libdragon-extensions/include/util_defs.h"
 
 #define GRAVITY 1
 #define MAX_SPEED_UP 20
@@ -144,14 +144,14 @@ void minigame_flyingbats_create() {
 		fb_data->players[i].alive = players_ready[i];
 
 		if (fb_data->players[i].isPlaying) {
-			fb_data->players[i].anim = animated_sprite_init(fb_data->sprites, new_size_same(11),
-															new_position(11, 13), SPRITE_fb_bat_1,
-															SPRITE_fb_bat_4, 100);
+			fb_data->players[i].anim = animated_sprite_init(&memory_pool, fb_data->sprites,
+															new_size_same(11), new_position(11, 13),
+															SPRITE_fb_bat_1, SPRITE_fb_bat_4, 100);
 		}
 	}
 
-	fb_data->enemies = sprite_batch_init(fb_data->sprites, MAX_ENEMIES, new_size_same(ENEMY_SIZE),
-										 new_position_same(9));
+	fb_data->enemies = sprite_batch_init(&memory_pool, fb_data->sprites, MAX_ENEMIES,
+										 new_size_same(ENEMY_SIZE), new_position_same(9));
 	for (size_t i = 0; i < MAX_ENEMIES; ++i) {
 		fb_data->enemies->positions[i].x = RANDN(RES_X) + (ENEMY_SIZE * 2) + RES_X;
 		fb_data->enemies->positions[i].y = RANDR(SCREEN_BORDER, SCREEN_BOTTOM);
@@ -244,25 +244,15 @@ void minigame_flyingbats_display(display_context_t disp) {
 	rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites, SPRITE_fb_sky);
 	rdp_draw_textured_rectangle(0, 0, 0, RES_X, RES_Y, MIRROR_DISABLED);
 
-	sprite_batch_draw(fb_data->enemies, (fb_data->animCounter % 2) + SPRITE_fb_obstacle_1);
+	sprite_batch_draw(fb_data->enemies, (fb_data->animCounter % 2) + SPRITE_fb_obstacle_1,
+					  screen_rect);
 
 	for (size_t player_id = 0; player_id < 4; ++player_id) {
 		if (!fb_data->players[player_id].alive)
 			continue;
 
-		animated_sprite_draw(fb_data->players[player_id].anim,
-							 fb_data->players[player_id].rect.pos);
-
-		// if (is_intersecting(fb_data->players[player_id].rect, screen_rect)) {
-		// 	size_t animCounter = fb_data->players[player_id].speed.y >= 0
-		// 							 ? fb_data->animCounter
-		// 							 : fb_data->animCounter * 2;
-		// 	rdp_sync(SYNC_PIPE);
-		// 	rdp_load_texture_stride(0, 0, MIRROR_DISABLED, fb_data->sprites,
-		// 							animCounter % (SPRITE_fb_bat_4 - SPRITE_fb_bat_1 + 1));
-		// 	rdp_draw_sprite(0, fb_data->players[player_id].rect.pos.x - 11,
-		// 					fb_data->players[player_id].rect.pos.y - 13, MIRROR_DISABLED);
-		// }
+		animated_sprite_draw(fb_data->players[player_id].anim, fb_data->players[player_id].rect.pos,
+							 screen_rect);
 	}
 
 	rdp_detach_display();

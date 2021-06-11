@@ -27,12 +27,14 @@ C_ROOT_FILES := $(wildcard *.c)
 C_SCREEN_FILES := $(wildcard screens/*.c)
 C_MINIGAMES_FILES := $(wildcard minigames/*.c)
 C_UTILS_FILES := $(wildcard utils/*.c)
+C_EXTENSIONS_FILES := $(wildcard ../libs/libdragon-extensions/src/*.c)
 
 O_ROOT_FILES := $(C_ROOT_FILES:.c=.o)
 O_SCREEN_FILES := $(C_SCREEN_FILES:.c=.o)
 O_MINIGAMES_FILES := $(C_MINIGAMES_FILES:.c=.o)
 O_UTILS_FILES := $(C_UTILS_FILES:.c=.o)
-OBJS = $(O_ROOT_FILES) $(O_SCREEN_FILES) $(O_MINIGAMES_FILES) $(O_UTILS_FILES)
+O_EXTENSIONS_FILES := $(C_EXTENSIONS_FILES:.c=.o)
+OBJS = $(O_ROOT_FILES) $(O_SCREEN_FILES) $(O_MINIGAMES_FILES) $(O_UTILS_FILES) $(O_EXTENSIONS_FILES)
 
 # audio
 SOX = sox

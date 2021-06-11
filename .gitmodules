@@ -1,3 +1,6 @@
 [submodule "libs/libdragon"]
 	path = libs/libdragon
 	url = git@github.com:stefanmielke/libdragon.git
+[submodule "libs/libdragon-extensions"]
+	path = libs/libdragon-extensions
+	url = git@github.com:stefanmielke/libdragon-extensions.git
