@@ -92,7 +92,7 @@ void die(int player_id) {
 		// check if record
 		if (fb_data->seconds > fb_data->secondsRecord) {
 			fb_data->isNewRecord = true;
-			game_save.times[MINIGAME_FLYINGBATS - 1] = fb_data->seconds;
+			game_save.body.times[MINIGAME_FLYINGBATS - 1] = fb_data->seconds;
 		}
 
 		fb_data->state = FB_DYING;
@@ -122,7 +122,7 @@ void minigame_flyingbats_create() {
 	fb_data->saving = false;
 	fb_data->wantsToSave = false;
 	fb_data->isNewRecord = false;
-	fb_data->secondsRecord = game_save.times[MINIGAME_FLYINGBATS - 1];
+	fb_data->secondsRecord = game_save.body.times[MINIGAME_FLYINGBATS - 1];
 
 	fb_time_string = mem_zone_alloc(&memory_pool, sizeof(char) * 9);  // format mm:ss\0
 	set_time();

@@ -143,7 +143,7 @@ const char *get_minigame_name(int *offset_x) {
 const char *get_minigame_record() {
 	switch (selected_minigame) {
 		case MINIGAME_FLYINGBATS: {
-			int time = game_save.times[MINIGAME_FLYINGBATS - 1];
+			int time = game_save.body.times[MINIGAME_FLYINGBATS - 1];
 			size_t minutes = time / 60;
 			size_t seconds = time % 60;
 			snprintf(det_sc_time_string, 8, "%02d:%02d", minutes, seconds);
