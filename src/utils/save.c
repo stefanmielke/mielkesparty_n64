@@ -48,10 +48,10 @@ SaveFile save_read() {
 		return new_save();
 	}
 
-	uint8_t magic;
+	uint8_t magic, save_check;
 
 	// check first byte to see if it exists, if not, loads default
-	eeprom_read(0, &save.check);
+	eeprom_read(0, &save_check);
 	eeprom_read(1, &magic);
 	if (magic != MAGIC_NUMBER) {
 		return new_save();
@@ -65,7 +65,7 @@ SaveFile save_read() {
 	memcpy(&save, buffer, sizeof(save));
 
 	uint8_t check = checksum(&save);
-	if (save.check != check) {
+	if (save_check != check) {
 		return new_save();
 	}
 
