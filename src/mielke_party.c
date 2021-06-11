@@ -109,10 +109,7 @@ void setup() {
 		next_screen = SCREEN_NOSAVE;
 	} else {
 		game_save = save_read();
-		if (game_save.check == 0) {
-			game_save.check = 1;
-			save_write(game_save);
-		}
+		save_write(&game_save);
 	}
 }
 

@@ -23,14 +23,14 @@ SaveFile new_save() {
 	return save;
 }
 
-void save_write(SaveFile save) {
+void save_write(SaveFile *save) {
 	if (eeprom_present() == EEPROM_NONE)
 		return;
 
-	uint8_t buffer[sizeof(save)];
-	memcpy(buffer, (uint8_t *)&save, sizeof(save));
+	uint8_t buffer[sizeof(save->body)];
+	memcpy(buffer, (uint8_t *)&save->body, sizeof(save->body));
 
-	uint8_t check = checksum(&save);
+	uint8_t check = checksum(save);
 	const uint8_t magic = MAGIC_NUMBER;
 
 	eeprom_write(0, &check);
@@ -48,24 +48,24 @@ SaveFile save_read() {
 		return new_save();
 	}
 
-	uint8_t magic, save_check;
+	uint8_t magic;
 
 	// check first byte to see if it exists, if not, loads default
-	eeprom_read(0, &save_check);
+	eeprom_read(0, &save.check);
 	eeprom_read(1, &magic);
 	if (magic != MAGIC_NUMBER) {
 		return new_save();
 	}
 
-	uint8_t buffer[sizeof(save)];
+	uint8_t buffer[sizeof(save.body)];
 	for (size_t i = 0; i < sizeof(buffer); ++i) {
 		eeprom_read(i + 2, &buffer[i]);
 	}
 
-	memcpy(&save, buffer, sizeof(save));
+	memcpy(&save.body, buffer, sizeof(save.body));
 
 	uint8_t check = checksum(&save);
-	if (save_check != check) {
+	if (save.check != check) {
 		return new_save();
 	}
 

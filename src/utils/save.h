@@ -14,5 +14,5 @@ typedef struct {
 	SaveFileBody body;
 } SaveFile;
 
-void save_write(SaveFile save);
+void save_write(SaveFile *save);
 SaveFile save_read();

@@ -177,7 +177,7 @@ void minigame_flyingbats_destroy() {
 
 bool minigame_flyingbats_tick() {
 	if (fb_data->saving) {
-		save_write(game_save);
+		save_write(&game_save);
 
 		fb_data->saving = false;
 		fb_data->wantsToSave = false;
