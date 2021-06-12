@@ -101,8 +101,8 @@ void setup() {
 
 	screen_rect.pos.x = SCREEN_LEFT;
 	screen_rect.pos.y = SCREEN_TOP;
-	screen_rect.size.width = SCREEN_RIGHT;
-	screen_rect.size.height = SCREEN_BOTTOM;
+	screen_rect.size.width = SCREEN_RIGHT - SCREEN_LEFT;
+	screen_rect.size.height = SCREEN_BOTTOM - SCREEN_TOP;
 
 	// show warning if there is no way to save
 	if (eeprom_present() == EEPROM_NONE) {
