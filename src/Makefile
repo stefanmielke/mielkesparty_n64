@@ -44,13 +44,15 @@ OGG_FILES := $(wildcard $(OGG_DIR)/*.ogg)
 PCM_DIR = raw/sfx
 PCM_FILES := $(OGG_FILES:.ogg=.raw)
 
+# maps
+MAP_FILES := $(shell find raw/maps -name '*.map')
+
 PROG_NAME = mielke_party
 PROG_TAG = "MielkeParty"
 ROM_DEPLOY_PATH = "./../"
 
 # audio build
 $(PCM_DIR)/%.raw: $(OGG_DIR)/%.ogg
-#	mkdir -p $(PCM_DIR)
 	@command -v $(SOX) >/dev/null 2>&1 || { \
 	    echo >&2 'This Makefile requires the `sox` command.'; \
 	    echo >&2 'Get it from http://sox.sourceforge.net/sox.html'; \
@@ -67,17 +69,24 @@ $(PROG_NAME)$(ROM_EXTENSION): $(PROG_NAME).elf packed_files.dfs
 	$(N64TOOL) $(N64_FLAGS) -t $(PROG_TAG) $(PROG_NAME).bin -s 1M packed_files.dfs
 	$(CHKSUM64PATH) $(PROG_NAME)$(ROM_EXTENSION)
 
-
 #$(MKSPRITEPATH) [bits] [columns] [rows] [source.png] [destination.sprite]
-packed_files.dfs: $(PCM_FILES)
+packed_files.dfs: $(PCM_FILES) $(MAP_FILES)
 	mkdir -p res
 	mkdir -p res/sfx
+	mkdir -p res/maps
+
 	mv $(OGG_DIR)/*.raw ./res/sfx/
+
 	$(MKSPRITEPATH) 16 7 1 ./raw/flying_bat.png ./res/flying_bat.sprite
 	$(MKSPRITEPATH) 16 9 1 ./raw/interface.png ./res/interface.sprite
 	$(MKSPRITEPATH) 16 12 1 ./raw/minigame_detail.png ./res/minigame_detail.sprite
 	$(MKSPRITEPATH) 16 1 1 ./raw/thumbs.png ./res/thumbs.sprite
 	$(MKSPRITEPATH) 16 1 1 ./raw/minigame_detail/full/flying_bats_large.png ./res/flying_bats_large.sprite
+
+# tiled
+#	cp $(MAP_FILES) ./res/maps
+#	$(MKSPRITEPATH) 16 8 14 ./raw/maps/test/background.png ./res/maps/background.sprite
+	
 	$(MKDFSPATH) $@ ./res/
 
 all: $(PROG_NAME)$(ROM_EXTENSION)
