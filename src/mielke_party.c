@@ -85,7 +85,7 @@ void setup() {
 	timer_init();
 	audio_init(AUDIO_FREQUENCY, AUDIO_BUFFERS);
 
-	mem_zone_init(&memory_pool, 0.6 * 1024);
+	mem_zone_init(&memory_pool, 2 * 1024 * 1024);
 
 	alloc_and_load_spritesheet_interface(ui_sprites);
 	audio_player = audio_setup(AUDIO_FREQUENCY);
