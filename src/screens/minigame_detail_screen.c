@@ -30,7 +30,7 @@ void minigame_detail_screen_create() {
 	audio_load_and_play_bgm(audio_player, BGM_INTRO);
 }
 
-ScreenType minigame_detail_screen_tick() {
+short minigame_detail_screen_tick() {
 	for (int i = 0; i < 4; ++i) {
 		if (players_ready[i]) {
 			if (keys_released.c[i].start) {

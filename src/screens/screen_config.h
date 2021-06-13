@@ -2,14 +2,14 @@
 
 #include <libdragon.h>
 
-typedef enum screen_type {
-    SCREEN_NONE,
-    SCREEN_NOSAVE,
-    SCREEN_MAIN,
-    SCREEN_MAIN_MENU,
-    SCREEN_INFINITE_MENU,
-    SCREEN_MINIGAME_DETAIL,
-    SCREEN_MINIGAME_PLAY
+typedef enum {
+	SCREEN_NONE = -1,
+	SCREEN_NOSAVE,
+	SCREEN_MAIN,
+	SCREEN_MAIN_MENU,
+	SCREEN_INFINITE_MENU,
+	SCREEN_MINIGAME_DETAIL,
+	SCREEN_MINIGAME_PLAY
 } ScreenType;
 
 typedef void (*fnCreate)();

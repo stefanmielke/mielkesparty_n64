@@ -16,7 +16,7 @@ void main_menu_screen_create() {
 	audio_load_and_play_bgm(audio_player, BGM_INTRO);
 }
 
-ScreenType main_menu_screen_tick() {
+short main_menu_screen_tick() {
 	// checking pressing buttons before moving the cursor
 	for (int i = 0; i < 4; ++i) {
 		if (keys_released.c[i].B) {

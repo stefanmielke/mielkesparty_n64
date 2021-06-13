@@ -37,7 +37,7 @@ void minigame_play_screen_create() {
 	play_screen_data->create();
 }
 
-ScreenType minigame_play_screen_tick() {
+short minigame_play_screen_tick() {
 	for (int i = 0; i < 4; ++i) {
 		if (keys_released.c[i].start) {
 			play_screen_data->destroy();

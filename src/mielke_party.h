@@ -1,19 +1,16 @@
 #pragma once
 
 #include "minigames.h"
+#include "screens/screen_config.h"
 #include "utils/audio.h"
 #include "utils/save.h"
 #include "../libs/libdragon-extensions/include/mem_pool.h"
 #include "../libs/libdragon-extensions/include/util_defs.h"
-#include "screens/screen_config.h"
+#include "../libs/libdragon-extensions/include/scene_manager.h"
 
-ScreenType screen_current;
-ScreenType next_screen;
 Rect screen_rect;
 
-fnCreate screen_create;
-fnTick screen_tick;
-fnDisplay screen_display;
+SceneManager *scene_manager;
 
 struct controller_data keys_held;
 struct controller_data keys_released;

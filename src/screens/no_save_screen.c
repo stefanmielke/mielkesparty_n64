@@ -9,7 +9,7 @@ void no_save_screen_create() {
     
 }
 
-ScreenType no_save_screen_tick() {
+short no_save_screen_tick() {
     for (int i = 0; i < 4; ++i) {
         if (keys_released.c[i].start)
             return SCREEN_MAIN;
