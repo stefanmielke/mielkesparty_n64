@@ -9,7 +9,6 @@
 #include "../../libs/libdragon-extensions/include/animated_sprite.h"
 #include "../../libs/libdragon-extensions/include/mem_pool.h"
 #include "../../libs/libdragon-extensions/include/sprite_batch.h"
-#include "../../libs/libdragon-extensions/include/util_defs.h"
 
 #define GRAVITY 1
 #define MAX_SPEED_UP 20

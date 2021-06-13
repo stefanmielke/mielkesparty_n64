@@ -5,7 +5,7 @@
 #include "utils/audio.h"
 #include "utils/save.h"
 #include "../libs/libdragon-extensions/include/mem_pool.h"
-#include "../libs/libdragon-extensions/include/util_defs.h"
+#include "../libs/libdragon-extensions/include/rect.h"
 #include "../libs/libdragon-extensions/include/scene_manager.h"
 
 Rect screen_rect;
