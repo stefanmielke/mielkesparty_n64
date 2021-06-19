@@ -22,8 +22,7 @@ uint32_t TRANSP, WHITE, BLACK, RED, GREEN, BLUE, GRAY, DARK_GRAY;
 
 #define SECOND 1000000
 
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef signed short s16;
-typedef signed int s32;
+typedef enum { SfxSet_None, SfxSet_Menu, SfxSet_Game } SfxSets;
+
+uint8_t audio_current_sfx_set;
+void audio_load_sfx_set(uint8_t set);

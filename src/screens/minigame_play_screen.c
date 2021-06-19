@@ -22,6 +22,7 @@ MiniGameScreen *play_screen_data;
 
 void minigame_play_screen_create() {
 	play_screen_data = mem_zone_alloc(&memory_pool, sizeof(MiniGameScreen));
+	audio_load_sfx_set(SfxSet_Game);
 
 	switch (selected_minigame) {
 		case MINIGAME_FLYINGBATS:

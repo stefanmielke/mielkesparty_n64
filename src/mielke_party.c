@@ -80,12 +80,21 @@ void setup() {
 	timer_init();
 	audio_init(AUDIO_FREQUENCY, AUDIO_BUFFERS);
 
-	mem_zone_init(&memory_pool, 2 * 1024 * 1024);
+	mem_zone_init(&memory_pool, 1 * 1024 * 1024);
 
 	scene_manager = scene_manager_init(NULL, &memory_pool, &change_screen);
 
 	alloc_and_load_spritesheet_interface(ui_sprites);
 	audio_player = audio_setup(AUDIO_FREQUENCY);
+	audio_current_sfx_set = SfxSet_None;
+
+	// const char *sfx_files[6] = {"/sfx/back.raw",
+	// 							"/sfx/click.raw",
+	// 							"/sfx/confirm.raw",
+	// 							"/sfx/controller_connected.raw",
+	// 							"/sfx/controller_unconnected.raw",
+	// 							"/sfx/unconfirm.raw"};
+	// audio_load_sfx(audio_player, sfx_files, 6);
 
 	TRANSP = graphics_make_color(0, 0, 0, 0);
 	WHITE = graphics_make_color(255, 255, 255, 255);
@@ -142,5 +151,33 @@ void change_screen(short curr_screen, short next_screen) {
 			break;
 		default:
 			abort();
+	}
+}
+
+void audio_load_sfx_set(uint8_t set) {
+	if (audio_current_sfx_set == set)
+		return;
+
+	audio_unload_all_sfx(audio_player);
+	audio_current_sfx_set = set;
+
+	const char **audio_set = NULL;
+	switch (set) {
+		case SfxSet_Menu:
+			audio_set = calloc(sizeof(const char *), 6);
+			audio_set[0] = "/sfx/back.raw";
+			audio_set[1] = "/sfx/click.raw";
+			audio_set[2] = "/sfx/confirm.raw";
+			audio_set[3] = "/sfx/controller_connected.raw";
+			audio_set[4] = "/sfx/controller_unconnected.raw";
+			audio_set[5] = "/sfx/unconfirm.raw";
+			break;
+		default:
+			break;
+	}
+
+	if (audio_set) {
+		audio_load_sfx(audio_player, audio_set, 6);
+		free(audio_set);
 	}
 }

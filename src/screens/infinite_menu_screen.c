@@ -14,7 +14,8 @@ enum menu_items { IM_FlyingBats, IM_MaxItems };
 void infinite_menu_screen_create() {
 	menu_screen_create(IM_MaxItems);
 
-	audio_load_and_play_bgm(audio_player, BGM_INTRO);
+	audio_load_and_play_bgm(audio_player, BGM_INTRO, "/sfx/intro.raw");
+	audio_load_sfx_set(SfxSet_Menu);
 }
 
 short infinite_menu_screen_tick() {

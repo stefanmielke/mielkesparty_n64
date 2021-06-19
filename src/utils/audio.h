@@ -15,71 +15,54 @@
 
 #define AUDIO_FREQUENCY 32000
 #define AUDIO_BUFFERS 4
-#define MONO_PCM_SAMPLE_SIZE sizeof(s16)
+#define MONO_PCM_SAMPLE_SIZE sizeof(int16_t)
 #define STEREO_PCM_SAMPLE_SIZE (MONO_PCM_SAMPLE_SIZE << 1)
+#define AUDIO_MAX_SFX 10
 
 /* Sound FX definitions */
 
 // Number of sfx it can play at a time. Last one is reserved for BGM.
 #define SFX_NUM_CHANNELS AUDIO_BUFFERS
 
-typedef enum sfx_sounds
-{
-    SFX_BACK,
-    SFX_CLICK,
-    SFX_CONFIRM,
-    SFX_CONTROLLER_CONNECTED,
-    SFX_CONTROLLER_DISCONNECTED,
-    SFX_UNCONFIRM,
-    SFX_TOTAL_SOUNDS
-} sfx_sounds_t;
+typedef struct {
+	uint16_t sample_rate;
+	uint8_t channels;
+	uint32_t frames;
+	uint32_t samples;
+	int16_t *data;
+	bool loop;
+} PcmSound;
 
-typedef enum
-{
-    BGM_NONE,
-    BGM_INTRO,
-    BGM_FLYING_BATS
-} bgm_sounds;
+typedef struct {
+	uint32_t cursor;
+	PcmSound *sfx;
+} SfxChannel;
 
-typedef struct
-{
-    u16 sample_rate;
-    u8 channels;
-    u32 frames;
-    u32 samples;
-    s16 *data;
-    bool loop;
-} pcm_sound_t;
+typedef struct {
+	// Setup state
+	uint16_t sample_rate;
+	uint32_t frames;
+	int16_t *buffer;
+	PcmSound *sfx_cache[AUDIO_MAX_SFX];
 
-typedef struct
-{
-    u32 cursor;
-    pcm_sound_t *sfx;
-} sfx_channel_t;
-
-typedef struct
-{
-    // Setup state
-    u16 sample_rate;
-    u32 frames;
-    s16 *buffer;
-    pcm_sound_t *sfx_cache[SFX_TOTAL_SOUNDS];
-
-    bgm_sounds current_bgm;
-    pcm_sound_t *bgm_sound;
-    // Playback state
-    sfx_channel_t channels[SFX_NUM_CHANNELS];
-} audio_t;
+	uint8_t current_bgm;
+	PcmSound *bgm_sound;
+	// Playback state
+	SfxChannel channels[SFX_NUM_CHANNELS];
+} Audio;
 
 /* Audio functions */
 
-audio_t *audio_setup(const u16 sample_rate);
-void audio_free(audio_t *audio);
+Audio *audio_setup(const uint16_t sample_rate);
+void audio_free(Audio *audio);
 
-void audio_tick(audio_t *audio);
-void audio_play_sfx(audio_t *audio, const sfx_sounds_t sfx_sound);
-void audio_load_and_play_bgm(audio_t *audio, bgm_sounds bgm_sound);
+void audio_load_sfx(Audio *audio, const char *sfx_files[], uint8_t sfx_count);
+void audio_unload_all_sfx(Audio *audio);
 
-pcm_sound_t *read_dfs_pcm_sound(const char *file, u16 sample_rate, u8 channels, bool loop);
+void audio_tick(Audio *audio);
+void audio_play_sfx(Audio *audio, const uint8_t sfx_sound);
+void audio_load_and_play_bgm(Audio *audio, uint8_t bgm_sound_id, const char *bgm_path);
+
+PcmSound *read_dfs_pcm_sound(const char *file, uint16_t sample_rate, uint8_t channels, bool loop);
 
 #define PLAY_AUDIO(audio) audio_play_sfx(audio_player, audio)

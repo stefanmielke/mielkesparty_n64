@@ -18,7 +18,7 @@ bool connected_controllers[4];
 
 MemZone memory_pool;
 sprite_t *ui_sprites;
-audio_t *audio_player;
+Audio *audio_player;
 
 MiniGame selected_minigame;
 bool players_ready[4];

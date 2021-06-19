@@ -27,7 +27,8 @@ void minigame_detail_screen_create() {
 	alloc_and_load_spritesheet_minigame_detail(md_sprites);
 	open_minigame_thumb();
 
-	audio_load_and_play_bgm(audio_player, BGM_INTRO);
+	audio_load_and_play_bgm(audio_player, BGM_INTRO, "/sfx/intro.raw");
+	audio_load_sfx_set(SfxSet_Menu);
 }
 
 short minigame_detail_screen_tick() {

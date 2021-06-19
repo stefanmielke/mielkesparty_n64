@@ -13,7 +13,8 @@ enum menu_items { MM_Infinite, MM_Score, MM_Multiplayer, MM_MaxItems };
 void main_menu_screen_create() {
 	menu_screen_create(MM_MaxItems);
 
-	audio_load_and_play_bgm(audio_player, BGM_INTRO);
+	audio_load_and_play_bgm(audio_player, BGM_INTRO, "/sfx/intro.raw");
+	audio_load_sfx_set(SfxSet_Menu);
 }
 
 short main_menu_screen_tick() {
