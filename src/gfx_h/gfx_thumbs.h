@@ -7,6 +7,7 @@
 
 typedef enum _thumbs_sprites { 
     SPRITE_flying_bats_small,
+    SPRITE_jump_rope_small,
     SPRITE_thumbs_SPRITES_MAX
 } thumbs_sprites;
 

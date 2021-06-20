@@ -182,6 +182,7 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">flying_bats_small.png</key>
+            <key type="filename">jump_rope_small.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0,0</point_f>
@@ -200,6 +201,7 @@
         <key>fileList</key>
         <array>
             <filename>flying_bats_small.png</filename>
+            <filename>jump_rope_small.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -80,8 +80,9 @@ packed_files.dfs: $(PCM_FILES) $(MAP_FILES)
 	$(MKSPRITEPATH) 16 7 1 ./raw/flying_bat.png ./res/flying_bat.sprite
 	$(MKSPRITEPATH) 16 9 1 ./raw/interface.png ./res/interface.sprite
 	$(MKSPRITEPATH) 16 12 1 ./raw/minigame_detail.png ./res/minigame_detail.sprite
-	$(MKSPRITEPATH) 16 1 1 ./raw/thumbs.png ./res/thumbs.sprite
+	$(MKSPRITEPATH) 16 2 1 ./raw/thumbs.png ./res/thumbs.sprite
 	$(MKSPRITEPATH) 16 1 1 ./raw/minigame_detail/full/flying_bats_large.png ./res/flying_bats_large.sprite
+	$(MKSPRITEPATH) 16 1 1 ./raw/minigame_detail/full/jump_rope_large.png ./res/jump_rope_large.sprite
 
 # tiled
 #	cp $(MAP_FILES) ./res/maps

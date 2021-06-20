@@ -212,6 +212,9 @@ void open_minigame_thumb() {
 		case MINIGAME_FLYINGBATS:
 			sprite_name = "/flying_bats_large.sprite";
 			break;
+		case MINIGAME_JUMPROPE:
+			sprite_name = "/jump_rope_large.sprite";
+			break;
 		default:
 			return;
 	}
