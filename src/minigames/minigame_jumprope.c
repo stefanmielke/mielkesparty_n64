@@ -9,7 +9,6 @@
 #define ROPE_SPEED_INIT 1000.f
 #define ROPE_SPEED_DEC 10.f
 #define ROPE_SPEED_MIN 400.f
-#define ROPE_SPEED_CHANGE_TIME 1
 
 #define GRAVITY .3f
 #define GROUND_Y 200.f
@@ -40,7 +39,6 @@ typedef struct {
 	timer_link_t *post_death_timer;
 	JP_PlayerData players[4];
 	float current_rope_time;
-	size_t current_rope_counter;
 	Position current_rope_position;
 	float current_start_rope_position_y;
 	sprite_t *sprites;
@@ -98,7 +96,6 @@ void minigame_jumprope_create() {
 	jp_data->current_rope_time = ROPE_SPEED_INIT;
 	jp_data->current_rope_position.x = 75 + SCREEN_BORDER;
 	jp_data->current_rope_position.y = 100;
-	jp_data->current_rope_counter = 0;
 	jp_data->current_start_rope_position_y = 150;
 
 	audio_load_and_play_bgm(audio_player, BGM_JUMP_ROPE, "sfx/intro.raw");
@@ -268,14 +265,9 @@ void jp_rope_tween_end_callback(void *target_object) {
 	if (jp_data->current_rope_time <= ROPE_SPEED_MIN)
 		return;
 
-	jp_data->current_rope_counter++;
-
-	if (jp_data->current_rope_counter >= ROPE_SPEED_CHANGE_TIME) {
-		jp_data->current_rope_counter = 0;
-		jp_data->current_rope_time -= ROPE_SPEED_DEC;
-		tween_change_duration(jp_data->tween, jp_data->current_rope_time);
-		tween_change_duration(jp_data->start_rope_tween, jp_data->current_rope_time);
-	}
+	jp_data->current_rope_time -= ROPE_SPEED_DEC;
+	tween_change_duration(jp_data->tween, jp_data->current_rope_time);
+	tween_change_duration(jp_data->start_rope_tween, jp_data->current_rope_time);
 }
 
 void jp_post_start(int ovfl) {
