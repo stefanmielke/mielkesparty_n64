@@ -36,7 +36,9 @@ short minigame_detail_screen_tick() {
 		if (players_ready[i]) {
 			if (keys_released.c[i].start) {
 				free(md_sprites);
+				md_sprites = NULL;
 				free(md_thumb);
+				md_thumb = NULL;
 				return SCREEN_MINIGAME_PLAY;
 			}
 			if (keys_released.c[i].B) {
@@ -50,7 +52,9 @@ short minigame_detail_screen_tick() {
 			}
 			if (keys_released.c[i].B) {
 				free(md_thumb);
+				md_thumb = NULL;
 				free(md_sprites);
+				md_sprites = NULL;
 				PLAY_AUDIO(SFX_BACK);
 				return SCREEN_INFINITE_MENU;
 			}
@@ -136,6 +140,9 @@ const char *get_minigame_name(int *offset_x) {
 		case MINIGAME_FLYINGBATS:
 			*offset_x = 50;
 			return "Flying Bats";
+		case MINIGAME_JUMPROPE:
+			*offset_x = 50;
+			return "Jump Rope";
 		default:
 			return "No MiniGame selected";
 	}
@@ -150,6 +157,13 @@ const char *get_minigame_record() {
 			snprintf(det_sc_time_string, 8, "%02d:%02d", minutes, seconds);
 			return det_sc_time_string;
 		}
+		case MINIGAME_JUMPROPE: {
+			int time = game_save.body.times[MINIGAME_JUMPROPE - 1];
+			size_t minutes = time / 60;
+			size_t seconds = time % 60;
+			snprintf(det_sc_time_string, 8, "%02d:%02d", minutes, seconds);
+			return det_sc_time_string;
+		}
 		default:
 			return "None";
 	}
@@ -159,6 +173,8 @@ const char *get_minigame_description() {
 	switch (selected_minigame) {
 		case MINIGAME_FLYINGBATS:
 			return " Fly across the screen\n\nwhile dodging the wisps!";
+		case MINIGAME_JUMPROPE:
+			return "Keep jumping the rope!";
 		default:
 			return "No description when\n\nthere's no minigame";
 	}
@@ -170,7 +186,6 @@ void draw_minigame_controls(display_context_t disp, int start_x, int start_y) {
 	switch (selected_minigame) {
 		case MINIGAME_FLYINGBATS: {
 			start_x += 20;
-			// return "Stick\nD-Pad: Move\n\n\nA: Fly";
 			graphics_draw_sprite_trans_stride(disp, start_x, start_y, ui_sprites, SPRITE_joystick);
 			graphics_draw_sprite_trans_stride(disp, start_x, start_y + 17, ui_sprites, SPRITE_dpad);
 			graphics_draw_text(disp, start_x + 24, start_y + 14, "Move");
@@ -178,6 +193,12 @@ void draw_minigame_controls(display_context_t disp, int start_x, int start_y) {
 			graphics_draw_sprite_trans_stride(disp, start_x, start_y + 50, ui_sprites,
 											  SPRITE_buttonA);
 			graphics_draw_text(disp, start_x + 24, start_y + 54, "Fly");
+		} break;
+		case MINIGAME_JUMPROPE: {
+			start_x += 20;
+			graphics_draw_sprite_trans_stride(disp, start_x, start_y + 50, ui_sprites,
+											  SPRITE_buttonA);
+			graphics_draw_text(disp, start_x + 24, start_y + 54, "Jump");
 		} break;
 		default: {
 			graphics_draw_text(disp, start_x, start_y, "No controls");

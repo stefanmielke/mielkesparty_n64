@@ -3,9 +3,10 @@
 #include <libdragon.h>
 
 typedef enum minigame {
-    MINIGAME_NONE,
-    MINIGAME_FLYINGBATS,
-    MINIGAME_MAX
+	MINIGAME_NONE,
+	MINIGAME_FLYINGBATS,
+	MINIGAME_JUMPROPE,
+	MINIGAME_MAX
 } MiniGame;
 
 typedef void (*fnGameCreate)();

@@ -88,14 +88,6 @@ void setup() {
 	audio_player = audio_setup(AUDIO_FREQUENCY);
 	audio_current_sfx_set = SfxSet_None;
 
-	// const char *sfx_files[6] = {"/sfx/back.raw",
-	// 							"/sfx/click.raw",
-	// 							"/sfx/confirm.raw",
-	// 							"/sfx/controller_connected.raw",
-	// 							"/sfx/controller_unconnected.raw",
-	// 							"/sfx/unconfirm.raw"};
-	// audio_load_sfx(audio_player, sfx_files, 6);
-
 	TRANSP = graphics_make_color(0, 0, 0, 0);
 	WHITE = graphics_make_color(255, 255, 255, 255);
 	BLACK = graphics_make_color(0, 0, 0, 255);

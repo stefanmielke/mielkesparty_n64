@@ -9,6 +9,7 @@
 #include "../minigames.h"
 #include "../../libs/libdragon-extensions/include/mem_pool.h"
 #include "../minigames/minigame_flyingbats.h"
+#include "../minigames/minigame_jumprope.h"
 
 typedef struct {
 	fnGameCreate create;
@@ -30,6 +31,12 @@ void minigame_play_screen_create() {
 			play_screen_data->tick = &minigame_flyingbats_tick;
 			play_screen_data->display = &minigame_flyingbats_display;
 			play_screen_data->destroy = &minigame_flyingbats_destroy;
+			break;
+		case MINIGAME_JUMPROPE:
+			play_screen_data->create = &minigame_jumprope_create;
+			play_screen_data->tick = &minigame_jumprope_tick;
+			play_screen_data->display = &minigame_jumprope_display;
+			play_screen_data->destroy = &minigame_jumprope_destroy;
 			break;
 		default:
 			abort();

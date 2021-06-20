@@ -58,22 +58,22 @@ FB_MiniGameData *fb_data;
 char *fb_time_string;	 // format mm:ss\0
 char *fb_record_string;	 // format mm:ss\0
 
-void player_tick(int player_id);
+void fb_player_tick(int player_id);
 
-void increase_speed(int ovfl) {
+void fb_increase_speed(int ovfl) {
 	fb_data->currentEnemySpeed += ENEMY_SPEED_INC;
 }
 
-void post_start(int ovfl) {
+void fb_post_start(int ovfl) {
 	fb_data->state = FB_PLAYING;
 }
 
-void post_death(int ovfl) {
+void fb_post_death(int ovfl) {
 	fb_data->state = FB_DEAD;
 	fb_data->wantsToSave = true;
 }
 
-void die(int player_id) {
+void fb_die(int player_id) {
 	fb_data->players[player_id].alive = false;
 
 	bool is_any_alive = false;
@@ -95,22 +95,22 @@ void die(int player_id) {
 		}
 
 		fb_data->state = FB_DYING;
-		fb_data->postDeathTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_death);
+		fb_data->postDeathTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, fb_post_death);
 	}
 }
 
-void set_time() {
+void fb_set_time() {
 	char minutes = fb_data->seconds / 60;
 	char seconds = fb_data->seconds % 60;
 	snprintf(fb_time_string, 8, "%02d:%02d", minutes, seconds);
 }
 
-void time_inc(int ovfl) {
+void fb_time_inc(int ovfl) {
 	++fb_data->seconds;
-	set_time();
+	fb_set_time();
 }
 
-void anim_update(int ovfl) {
+void fb_anim_update(int ovfl) {
 	++fb_data->animCounter;
 }
 
@@ -124,7 +124,7 @@ void minigame_flyingbats_create() {
 	fb_data->secondsRecord = game_save.body.times[MINIGAME_FLYINGBATS - 1];
 
 	fb_time_string = mem_zone_alloc(&memory_pool, sizeof(char) * 9);  // format mm:ss\0
-	set_time();
+	fb_set_time();
 
 	fb_record_string = mem_zone_alloc(&memory_pool, sizeof(char) * 9);	// format - mm:ss\0
 	char record_minutes = fb_data->secondsRecord / 60;
@@ -157,10 +157,10 @@ void minigame_flyingbats_create() {
 	}
 	fb_data->currentEnemySpeed = ENEMY_SPEED_INIT;
 
-	fb_data->animTimer = new_timer(TIMER_TICKS(SECOND / 10), TF_CONTINUOUS, anim_update);
-	fb_data->timeTimer = new_timer(TIMER_TICKS(SECOND), TF_CONTINUOUS, time_inc);
-	fb_data->speedTimer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, increase_speed);
-	fb_data->postStartTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, post_start);
+	fb_data->animTimer = new_timer(TIMER_TICKS(SECOND / 10), TF_CONTINUOUS, fb_anim_update);
+	fb_data->timeTimer = new_timer(TIMER_TICKS(SECOND), TF_CONTINUOUS, fb_time_inc);
+	fb_data->speedTimer = new_timer(TIMER_TICKS(5 * SECOND), TF_CONTINUOUS, fb_increase_speed);
+	fb_data->postStartTimer = new_timer(TIMER_TICKS(1 * SECOND), TF_ONE_SHOT, fb_post_start);
 
 	audio_load_and_play_bgm(audio_player, BGM_FLYING_BATS, "sfx/intro.raw");
 }
@@ -189,7 +189,7 @@ bool minigame_flyingbats_tick() {
 		return true;
 
 	for (size_t i = 0; i < 4; ++i) {
-		player_tick(i);
+		fb_player_tick(i);
 	}
 
 	for (size_t i = 0; i < MAX_ENEMIES; ++i) {
@@ -208,7 +208,7 @@ bool minigame_flyingbats_tick() {
 		for (size_t i = 0; i < MAX_ENEMIES; ++i) {
 			Rect enemy_bounds = new_rect(fb_data->enemies->positions[i], fb_data->enemies->size);
 			if (is_intersecting(enemy_bounds, fb_data->players[player_id].rect)) {
-				die(player_id);
+				fb_die(player_id);
 				break;
 			}
 		}
@@ -270,7 +270,7 @@ void minigame_flyingbats_display(display_context_t disp) {
 	graphics_draw_text(disp, SCREEN_LEFT + 45, SCREEN_TOP, fb_record_string);
 }
 
-void player_tick(int player_id) {
+void fb_player_tick(int player_id) {
 	if (!fb_data->players[player_id].alive)
 		return;
 

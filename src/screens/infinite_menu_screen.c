@@ -9,7 +9,7 @@
 #include "../../libs/libdragon-extensions/include/mem_pool.h"
 #include "../gfx_h/gfx_interface.h"
 
-enum menu_items { IM_FlyingBats, IM_MaxItems };
+enum menu_items { IM_FlyingBats, IM_JumpRope, IM_MaxItems };
 
 void infinite_menu_screen_create() {
 	menu_screen_create(IM_MaxItems);
@@ -32,6 +32,9 @@ short infinite_menu_screen_tick() {
 				case IM_FlyingBats:
 					selected_minigame = MINIGAME_FLYINGBATS;
 					break;
+				case IM_JumpRope:
+					selected_minigame = MINIGAME_JUMPROPE;
+					break;
 			}
 			PLAY_AUDIO(SFX_CLICK);
 			menu_screen_destroy();
@@ -51,6 +54,9 @@ void infinite_menu_screen_display(display_context_t disp) {
 
 	graphics_set_color(menu_screen->currentMenuItem == IM_FlyingBats ? RED : WHITE, BLACK);
 	graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2), "Flying Bats");
+
+	graphics_set_color(menu_screen->currentMenuItem == IM_JumpRope ? RED : WHITE, BLACK);
+	graphics_draw_text(disp, (RES_X / 2) - 55, (RES_Y / 2) + 15, "Jump Rope");
 
 	DRAW_BACK_BUTTON();
 }
